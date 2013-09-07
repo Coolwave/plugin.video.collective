@@ -40,6 +40,8 @@ onechannel_ratings = 'http://www.primewire.ag/?sort=ratings'
 onechannel_ratingstv = 'http://www.primewire.ag/?tv=&sort=ratings'
 onechannel_releasedatetv = 'http://www.primewire.ag/?tv=&sort=release'
 onechannel_releasedate = 'http://www.primewire.ag/?sort=release'
+IMDBTV_WATCHLIST = settings.imdbtv_watchlist_url()
+IMDB_LIST = settings.imdb_list_url()
 
 #_OA = Addon('plugin.video.otheraddons', sys.argv)
 #IMDBTV_WATCHLIST = settings.imdbtv_watchlist_url()
@@ -104,9 +106,9 @@ def MOVIEScat():
 def IMDbcat():
         addDir('In Theaters',IMDbIT_url,15,art_('In Theaters','Sub Menus'),None,'')
         addDir('Top 250',IMDb250_url,17,art_('Top 250','Sub Menus'),None,'')
-        addDir('IMDb',movie_url,'',icon,None,'')
+        addDir('Genre','http://www.imdb.com/genre',33,art_('Genre','Sub Menus'),None,'')
         addDir('IMDb watchlist',movie_url,13,art_('IMDb watchlist','Sub Menus'),None,'')
-        addDir('Search',movie_url,9,art_('Search','Sub Menus'),None,'')
+        addDir('Search','url',32,art_('Search','Sub Menus'),None,'')
         set_view('list')
 
 def MUSICcat():
@@ -318,6 +320,61 @@ def onechanneltvreleasedate(url):
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],18,'',None,'')
         set_view('tvshows')
+		
+def ALLTIMEIMDB(url):
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+        match = re.compile('<img src="(.+?)" height="74" width="54" alt=".+?" title="(.+?)"></a>\n  </td>\n  <td class="title">\n    \n\n<span class="wlb_wrapper" data-tconst="(.+?)" data-size="small" data-caller-name="search"></span>\n\n    <a href=".+?">.+?</a>\n    <span class="year_type">.+?</span><br>\n<div class="user_rating">\n\n\n<div class="rating rating-list" data-auth=".+?" id=".+?" data-ga-identifier="advsearch"\n title=".+?click stars to rate">\n<span class="rating-bg">&nbsp;</span>\n<span class="rating-imdb" style="width.+?">&nbsp;</span>\n<span class="rating-stars">\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>1</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>2</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>3</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>4</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>5</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>6</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>7</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>8</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>9</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>10</span></a>\n</span>\n<span class="rating-rating"><span class="value">.+?</span><span class="grey">/</span><span class="grey">10</span></span>\n<span class="rating-cancel"><a href=".+?" title="Delete" rel="nofollow"><span>X</span></a></span>\n&nbsp;</div>\n\n</div>\n<span class="outline">(.+?)</span>').findall(link)
+        nextp=re.compile('<a href="(.+?)">Next&nbsp;').findall(link)
+        try:
+                nextp1=nextp[0]
+        except:
+                pass       
+        for iconimage, name,url, description in match:
+            name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And')
+            iconimage1 = iconimage
+            url = 'http://www.imdb.com/title/'+str(url)+'/'
+            regex=re.compile('(.+?)_V1.+?.jpg')
+            regex1=re.compile('(.+?).gif')
+            try:
+                    match = regex.search(iconimage1)
+                    iconimage= '%s_V1_.SX593_SY799_.jpg'%(match.group(1))
+                    fanart= '%s_V1.jpg'%(match.group(1))
+            except:
+                    pass
+            try:    
+                    match= regex1.search(iconimage1)
+                    iconimage= '%s.gif'%(match.group(1))
+                    fanart= '%s_V1.jpg'%(match.group(1))
+            except:
+                    pass
+                    addDir(name,url,3,iconimage,None,description)   
+                    set_view('list') 
+        try:
+                url='http://www.imdb.com'+str(nextp1)
+                name= '[COLOR blue][B]Next Page >>[/B][/COLOR]'
+                addDir(name,url,34,'',None,'')
+                set_view('list') 
+        except:
+                pass
+        addDir('[COLOR red][B]<< Return To TV Menu[/B][/COLOR]','url',12,'',None,'')    
+        set_view('list') 
+
+def IMDBGENRE(url):
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+        match = re.compile('<a href="/genre/(.+?)">(.+?)</a>').findall(link)
+        for url1, name, in match:
+                url='http://www.imdb.com/search/title?genres=%s&title_type=feature&sort=moviemeter,asc'% (url1)
+                iconimage=art+url1+'.png'
+                addDir(name,url,34,iconimage,None,'')
+                set_view('list')
                 
 
 
@@ -340,7 +397,7 @@ def add_executeaddons(name):
                 addons_context.append('plugin://plugin.video.icefilms/?mode=555&url=http://www.icefilms.info/&search='+search+'&nextPage=1')
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.1channel'):
                 addons_name.append('1channel (Movies)')
-                addons_context.append('plugin://plugin.video.1channel/?mode=GetSearchQuery&section=&title=planes')
+                addons_context.append('plugin://plugin.video.1channel/?mode=Search&url=url&name='+name)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.alluc'):
                 addons_name.append('Alluc')
                 addons_context.append('plugin://plugin.video.alluc/?mode=22&url=url&name='+name)
@@ -420,23 +477,30 @@ def add_executeaddonstv(name):
 #title = _OA.queries.get('title', '')
 #video_type = _OA.queries.get('video_type', '')
 
-def IMDB_LISTS(url):
-        IMDBTV_WATCHLIST = "http://www.imdb.com/user/" + local.getSetting+('imdb_user') + "/watchlist?start=1&view=grid&sort=listorian:asc&defaults=1"
-        addDir('Watch List',IMDBTV_WATCHLIST,12,addonfolder + artfolder + 'IMDB.png','')
-        if settingsfile+('imdb_user') == 'ur********':
+def IMDB_LISTS(url): 
+        addDir('Watch List',IMDBTV_WATCHLIST,14,art+'imdb.png',None,'')
+        if local.getSetting('imdb_user') == 'ur********':
                 xbmcgui.Dialog().ok('The Collective Information','You Need To Input Your IMDb Number Into ','Addon Settings')
-        if settingsfile+('message') == 'false':
+        if local.getSetting('message') == 'false':
                 xbmcgui.Dialog().ok('The Collective Information','            For Full Support For This Plugin Please Visit','                    [COLOR yellow][B]WWW.XBMCHUB.COM[/B][/COLOR]','Please Turn Off Message in Addon Settings')
         url=IMDB_LIST
-        link=OPEN_URL(url)
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
         match = re.compile('<div class="list_name"><b><a    onclick=".+?"     href="(.+?)"    >(.+?)</a>').findall(link)
         for url, name in match:
             url='http://www.imdb.com'+str(url)+'?start=1&view=grid&sort=listorian:asc&defaults=1'   
-            addDir(name,url,12,addonfolder + artfolder + 'IMDB.png','')    
-            setView('movies', 'default-view')
-
+            addDir(name,url,14,art_('IMDb','Sub Menus'),None,'')    
+            set_view('list')  
+           
 def WATCH_TV_LIST(url):
-        link=OPEN_URL(url)
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
         link=str(link).replace('\n','').replace('src="http://i.media-imdb.com/images/SFaa265aa19162c9e4f3781fbae59f856d/nopicture/medium/film.png" ','')
         link=link.split('<div class="list grid">')[1]
         link=link.split('<div class="see-more">')[0]
@@ -453,8 +517,16 @@ def WATCH_TV_LIST(url):
             name=str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace(':','')
             series=str(name)
             description=''
-            addDir(name,url,24,iconimage,fanart,series,description,'')   
-            setView('movies', 'movies-view')
+            addDir(name,url,35,iconimage,None,'')   
+            set_view('list') 
+                        
+def WATCH_LIST_SEARCH(name,url,iconimage):
+        series = str(name)
+        dialog = xbmcgui.Dialog()
+        if dialog.yesno("Please Select Correct Type", "", "[B]    Please Select If Item Is A Movie Or Tv Series[/B]", '', "MOVIE", "TV"): 
+                        TV_SEASON(url,iconimage,series,fanart)
+        else:
+                        EasySearch(name,iconimage, fanart)
 
 
 
@@ -520,6 +592,41 @@ def IMDbSearch(url):
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
 		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
         #setView('movies', 'default')
+
+def IMDB_SEARCH(name):
+        EnableMeta = local.getSetting('Enable-Meta')
+        search_entered = ''
+        keyboard = xbmc.Keyboard(search_entered, 'Search The Collective...XBMCHUB.COM')
+        keyboard.doModal()
+        if keyboard.isConfirmed():
+            search_entered = keyboard.getText() .replace(' ','+')  # sometimes you need to replace spaces with + or %20#
+            if search_entered == None:
+                return False   
+        url= 'http://www.imdb.com/search/title?title=%s&title_type=feature'% (search_entered)           
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', USER_AGENT)
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()  
+        match=re.compile('title="(.+?)"><img src="(.+?)"').findall(link)
+        for name,iconimage in match:
+            regex=re.compile('(.+?)_V1.+?.jpg')
+            regex1=re.compile('(.+?).gif')
+            try:
+                    match = regex.search(iconimage)
+                    iconimage= '%s_V1_.SX593_SY799_.jpg'%(match.group(1))
+                    fanart= '%s_V1.jpg'%(match.group(1))
+            except:
+                    pass
+            try:    
+                    match= regex1.search(iconimage)
+                    iconimage= '%s.gif'%(match.group(1))
+                    fanart= '%s_V1.jpg'%(match.group(1))
+            except:
+                    pass
+            if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
+            if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,iconimage,None,'Movies')
+            set_view('list')
 
 def TVDBSearch(url):
         EnableMeta = local.getSetting('Enable-Meta')
@@ -738,7 +845,19 @@ elif mode==31:
 
 elif mode==32:
         print ''+url
-        IMDbSearch(url)
+        IMDB_SEARCH(name)
+		
+elif mode==33:
+        print ''+url
+        IMDBGENRE(url)
+
+elif mode==34:
+        print ''+url
+        ALLTIMEIMDB(url)
+
+elif mode==35:
+        print ''+url
+        WATCH_LIST_SEARCH(name,url,iconimage)
 
 elif mode==309:
         print ''+url
