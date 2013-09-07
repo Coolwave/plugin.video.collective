@@ -29,7 +29,7 @@ tv_url = 'http://www.nzbtvseeker.com/'
 IMDb_url = 'http://www.imdb.com'
 IMDbIT_url = 'http://www.imdb.com/movies-in-theaters/?ref_=nb_mv_2_inth'
 IMDb250_url = 'http://www.imdb.com/search/title?groups=top_250&sort=user_rating&my_ratings=exclude'
-onechannel_base = 'http://www.primewire.ag/'
+onechannel_base = 'http://www.primewire.ag'
 onechannel_featured = 'http://www.primewire.ag/index.php?sort=featured'
 onechannel_featuredtv = 'http://www.primewire.ag/?tv=&sort=featured'
 onechannel_lastest = 'http://www.primewire.ag/?sort=date'
@@ -542,7 +542,7 @@ def WATCH_LIST_SEARCH(name,url,iconimage):
 def Searchmovies(url):
         EnableMeta = local.getSetting('Enable-Meta')
         searchStr = ''
-        keyboard = xbmc.Keyboard(searchStr, "Search")
+        keyboard = xbmc.Keyboard(searchStr, "Search The Collective")
         keyboard.doModal()
         if (keyboard.isConfirmed() == False):
                 return
@@ -550,12 +550,12 @@ def Searchmovies(url):
         if len(searchstring) == 0:
                 return
         newStr = searchstring.replace(' ','%20')
-        link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key=fdd6063da4415536&search_section=1')
+        link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key=7b2ab44ae14b05b2&search_section=1')
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
 		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
-        #setView('movies', 'default')
+        set_view('list')
 
 def Searchtvshows(url):
         EnableMeta = local.getSetting('Enable-Meta')
@@ -568,14 +568,14 @@ def Searchtvshows(url):
         if len(searchstring) == 0:
                 return
         newStr = searchstring.replace(' ','%20')
-        link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key=fdd6063da4415536&search_section=2')
+        link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key=7b2ab44ae14b05b2&search_section=2')
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
 		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
-        #setView('movies', 'default')
+        set_view('list')
 
-def IMDbSearch(url):
+def IMDB_SEARCH(url):
         EnableMeta = local.getSetting('Enable-Meta')
         searchStr = ''
         keyboard = xbmc.Keyboard(searchStr, "Search")
@@ -586,14 +586,16 @@ def IMDbSearch(url):
         if len(searchstring) == 0:
                 return
         newStr = searchstring.replace(' ','%20')
-        link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key=fdd6063da4415536&search_section=2')
-        match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
-        for url, name, thumbnail in match:
+        #http://www.imdb.com'/search/title?title='+newStr+'&title_type=feature,tv_movie,documentary,short,video,unknown'
+        link = OPEN_URL(url+'/search/title?title='+newStr+'&title_type=feature,tv_movie,documentary,short,video,unknown')
+        
+        match =  re.compile('<a href=".+?" title="(.+?)"><img src="(.+?)" height="74" width="54" alt=".+?" title=".+?"></a>').findall(link)
+        for name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
 		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
-        #setView('movies', 'default')
+        set_view('list')
 
-def IMDB_SEARCH(name):
+def IMDB_SEARCHTV(url):
         EnableMeta = local.getSetting('Enable-Meta')
         search_entered = ''
         keyboard = xbmc.Keyboard(search_entered, 'Search The Collective...XBMCHUB.COM')
@@ -845,7 +847,7 @@ elif mode==31:
 
 elif mode==32:
         print ''+url
-        IMDB_SEARCH(name)
+        IMDB_SEARCH(url)
 		
 elif mode==33:
         print ''+url
@@ -858,7 +860,7 @@ elif mode==34:
 elif mode==35:
         print ''+url
         WATCH_LIST_SEARCH(name,url,iconimage)
-
+		
 elif mode==309:
         print ''+url
         addon.addon.openSettings()
