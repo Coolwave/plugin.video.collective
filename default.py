@@ -46,15 +46,23 @@ onechannel_releasedate = 'http://www.primewire.ag/?sort=release'
 #IMDB_LIST = settings.imdb_list_url()
 
 #Metahandler
-def GRABMETA(name,types):
+def GRABMETA(name,types,year=None):
 	type = types
+	if year=='': year=None
 	EnableMeta = local.getSetting('Enable-Meta')
+	#
+	if year==None:
+		try: year=re.search('\s*\((\d\d\d\d)\)',name).group(1)
+		except: year=None
+	if year is not None: name=name.replace(' ('+year+')','').replace('('+year+')','')
+	#
 	if EnableMeta == 'true':
 		if 'Movie' in type:
-			meta = grab.get_meta('movie',name,'',None,None,overlay=6)
+			### grab.get_meta(media_type, name, imdb_id='', tmdb_id='', year='', overlay=6)
+			meta = grab.get_meta('movie',name,'',None,year,overlay=6)
 			infoLabels = {'rating': meta['rating'],'duration': meta['duration'],'genre': meta['genre'],'mpaa':"rated %s"%meta['mpaa'],'plot': meta['plot'],'title': meta['title'],'writer': meta['writer'],'cover_url': meta['cover_url'],'director': meta['director'],'cast': meta['cast'],'backdrop_url': meta['backdrop_url'],'backdrop_url': meta['backdrop_url'],'tmdb_id': meta['tmdb_id'],'year': meta['year']}
 		elif 'tvshow' in type:
-			meta = grab.get_meta('tvshow',name,'','',None,overlay=6)
+			meta = grab.get_meta('tvshow',name,'','',year,overlay=6)
 			infoLabels = {'rating': meta['rating'],'genre': meta['genre'],'mpaa':"rated %s"%meta['mpaa'],'plot': meta['plot'],'title': meta['title'],'cover_url': meta['cover_url'],'cast': meta['cast'],'studio': meta['studio'],'banner_url': meta['banner_url'],'backdrop_url': meta['backdrop_url'],'status': meta['status']}
 	else: infoLabels=[]
 	return infoLabels
@@ -139,7 +147,7 @@ def IMDbInTheaters(url):
         match =  re.compile('<div class=".+?">\n<img class=".+?"\nheight="209"\nwidth="140"\nalt=".+?"\ntitle="(.+?)"\nsrc="(.+?)"\nitemprop="image" />\n</div>').findall(link)
         for name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
 
 def IMDbrate(url):
         EnableMeta = local.getSetting('Enable-Meta')
@@ -151,7 +159,7 @@ def IMDbrate(url):
         match = re.compile('<a href="(.+?)" title="(.+?)"><img src=".+?" height="74" width="54" alt=".+?" title=".+?"></a>').findall(link)
         for url, name in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<a href="(.+?)">Next.+?</a>').findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.imdb.com/'+nextpage[0],17,'',None,'')
@@ -166,7 +174,7 @@ def onechannelmfeature(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],18,'',None,'')
@@ -181,7 +189,7 @@ def onechanneltvfeature(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],18,'',None,'')
@@ -197,7 +205,7 @@ def onechannellastest(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],18,'',None,'')
@@ -212,7 +220,7 @@ def onechannellastesttv(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],18,'',None,'')
@@ -228,7 +236,7 @@ def onechannelmpopular(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],18,'',None,'')
@@ -243,7 +251,7 @@ def onechanneltvpopular(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],18,'',None,'')
@@ -259,7 +267,7 @@ def onechannelmratings(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],18,'',None,'')
@@ -274,7 +282,7 @@ def onechanneltvratings(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],18,'',None,'')
@@ -290,7 +298,7 @@ def onechannelmreleasedate(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],18,'',None,'')
@@ -305,7 +313,7 @@ def onechanneltvreleasedate(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],18,'',None,'')
