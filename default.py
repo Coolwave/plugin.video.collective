@@ -375,6 +375,16 @@ def IMDBGENRE(url):
                 iconimage=art+url1+'.png'
                 addDir(name,url,34,iconimage,None,'')
                 set_view('list')
+
+def onechannelinfo(url):
+        url = 'http://www.primewire.ag'
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+        match = re.compile('<input type="hidden" name="key" value="(.+?)" />').findall(link)
+        return match
                 
 
 
@@ -397,7 +407,7 @@ def add_executeaddons(name):
                 addons_context.append('plugin://plugin.video.icefilms/?mode=555&url=http://www.icefilms.info/&search='+search+'&nextPage=1')
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.1channel'):
                 addons_name.append('1channel (Movies)')
-                addons_context.append('plugin://plugin.video.1channel/?mode=Search&url=url&name='+name)
+                addons_context.append('plugin://plugin.video.1channel/?mode=7000&section=&query='+name)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.alluc'):
                 addons_name.append('Alluc')
                 addons_context.append('plugin://plugin.video.alluc/?mode=22&url=url&name='+name)
@@ -435,7 +445,7 @@ def add_executeaddonstv(name):
                 addons_context.append('plugin://plugin.video.icefilms/?mode=555&url=http://www.icefilms.info/&search='+search+'&nextPage=1')
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.1channel'):
                 addons_name.append('1channel (Tv)')
-                addons_context.append('plugin://plugin.video.1channel/?mode=GetSearchQuery&section=tv&title='+search)
+                addons_context.append('plugin://plugin.video.1channel/?mode=7000&section=tv&query='+search)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.iwatchonline'):
                 addons_name.append('IwatchOnline (Tv)')
                 addons_context.append('plugin://plugin.video.iwatchonline/?mode=Search&query=wentworth&searchin=t')#&searchin=t')
@@ -526,16 +536,8 @@ def WATCH_LIST_SEARCH(name,url,iconimage):
         if dialog.yesno("Please Select Correct Type", "", "[B]    Please Select If Item Is A Movie Or Tv Series[/B]", '', "MOVIE", "TV"): 
                         TV_SEASON(url,iconimage,series,fanart)
         else:
-                        EasySearch(name,iconimage, fanart)
+                        Searchmovies(name,iconimage, fanart)
 
-
-
-#def imdbtv_watchlist_url():
-    #return "http://www.imdb.com/user/" + settingsfile.getSetting('imdb_user') + "/watchlist?start=1&view=grid&sort=listorian:asc&defaults=1"
-    
-#def imdb_list_url():
-    #return 'http://www.imdb.com/user/' + settingsfile.getSetting('imdb_user') + '/lists?tab=public'
-    
     
 ################################################################################################################################################################
         
@@ -550,7 +552,8 @@ def Searchmovies(url):
         if len(searchstring) == 0:
                 return
         newStr = searchstring.replace(' ','%20')
-        link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key=7b2ab44ae14b05b2&search_section=1')
+        onechannel = onechannelinfo(url)
+        link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key='+onechannel+'&search_section=1')
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
@@ -568,7 +571,7 @@ def Searchtvshows(url):
         if len(searchstring) == 0:
                 return
         newStr = searchstring.replace(' ','%20')
-        link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key=7b2ab44ae14b05b2&search_section=2')
+        link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key=(.+?)&search_section=2')
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
