@@ -20,22 +20,4 @@
 	<setting id="episode-view"   type="number" label="Episodes"              default="515"  enable="!eq(-5,false)"/>
 	<setting id="links-view"   	 type="number" label="Links"              	 default="50"   enable="!eq(-6,false)" visible="false"/>
 </category>
-<category label="Context menu addon settings">
-    <setting id="Enable-Icefilms" type="bool" label="Enable-Icefilms" default="False"/>
-	<setting id="Enable-Projectfreetv" type="bool" label="Enable-Projectfreetv" default="False"/>
-	<setting id="Enable-Alluc" type="bool" label="Enable-Alluc" default="False"/>
-	<setting id="Enable-Mashup" type="bool" label="Enable-Mashup" default="False"/>
-	<setting id="Enable-Tubeplus" type="bool" label="Enable-Tubeplus" default="False"/>
-	<setting id="Enable-Whatthefurk" type="bool" label="Enable-Whatthefurk" default="False"/>
-	<setting id="Enable-Theroyalwe" type="bool" label="Enable-Theroyalwe" default="False"/>
-	<setting id="Enable-tvrelease" type="bool" label="Enable-tvrelease" default="False"/>
-	<setting id="Enable-Rlsmix" type="bool" label="Enable-Rlsmix" default="False"/>
-	<setting id="Enable-oneclickmoviez" type="bool" label="Enable-oneclickmoviez" default="False"/>
-	<setting id="Enable-iwatchonline" type="bool" label="Enable-iwatchonline" default="False"/>
-	<setting id="Enable-hdtvrelease" type="bool" label="Enable-hdtvrelease" default="False"/>
-	<setting id="Enable-moviekingdom" type="bool" label="Enable-moviekingdom" default="False"/>
-	<setting id="Enable-Sceper" type="bool" label="Enable-Sceper" default="False"/>
-	<setting id="Enable-EasyNews" type="bool" label="Enable-EasyNews" default="False"/>
-	<setting id="Enable-SimplyMovies" type="bool" label="Enable-SimplyMovies" default="False"/>
-</category>
 </settings>
