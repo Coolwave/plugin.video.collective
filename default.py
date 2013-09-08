@@ -160,6 +160,7 @@ def IMDbrate(url):
         response.close()
         match = re.compile('<a href="(.+?)" title="(.+?)"><img src=".+?" height="74" width="54" alt=".+?" title=".+?"></a>').findall(link)
         for url, name in match:
+                name=name.replace("'","&#x23;s")
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
                 if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<a href="(.+?)">Next.+?</a>').findall(link)
@@ -552,7 +553,7 @@ def Searchmovies(url):
         if len(searchstring) == 0:
                 return
         newStr = searchstring.replace(' ','%20')
-        onechannel = onechannelinfo(url)
+        onechannel = re.compile('<input type="hidden" name="key" value="(.+?)" />').findall(link)
         link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key='+onechannel+'&search_section=1')
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
