@@ -40,6 +40,10 @@ onechannel_ratings = 'http://www.primewire.ag/?sort=ratings'
 onechannel_ratingstv = 'http://www.primewire.ag/?tv=&sort=ratings'
 onechannel_releasedatetv = 'http://www.primewire.ag/?tv=&sort=release'
 onechannel_releasedate = 'http://www.primewire.ag/?sort=release'
+allmusic_url = 'http://www.allmusic.com'
+allmusic_newrelease = 'http://www.allmusic.com/newreleases'
+billboard_url = 'http://www.billboard.com/'
+billboard_200 = 'http://www.billboard.com/charts/billboard-200'
 IMDBTV_WATCHLIST = settings.imdbtv_watchlist_url()
 IMDB_LIST = settings.imdb_list_url()
 
@@ -112,11 +116,17 @@ def IMDbcat():
         set_view('list')
 
 def MUSICcat():
-        addDir('Lastest',onechannel_lastest,20,art_('Lastest','Sub Menus'),None,'')
+        addDir('Billboard 200',billboard_200,39,art_('Lastest','Sub Menus'),None,'')
         addDir('Featured',onechannel_featured,18,art_('Featured','Sub Menus'),None,'')
         addDir('Popular',onechannel_popular,22,art_('Popular','Sub Menus'),None,'')
         addDir('Ratings',onechannel_ratings,24,art_('Ratings','Sub Menus'),None,'')
-        addDir('Release Date',onechannel_releasedate,26,art_('Release Date','Sub Menus'),None,'')
+        addDir('New Release',allmusic_newrelease,38,art_('Release Date','Sub Menus'),None,'')
+        addDir('Search',allmusic_url,37,art_('Search','Sub Menus'),None,'')
+
+def MUSICsearch():
+        addDir('Search by Artist',allmusic_url,36,art_('Search','Sub Menus'),None,'')
+        addDir('Search by Album',allmusic_url,36,art_('Search','Sub Menus'),None,'')
+        addDir('Search by Song',allmusic_url,36,art_('Search','Sub Menus'),None,'')
                                                                           
 def MOVIESgene(url):#  cause mode is empty in this one it will go back to first directory
         addDir('Action',movie_url,'',icon,None,'')
@@ -386,6 +396,32 @@ def onechannelinfo(url):
         response.close()
         match = re.compile('<input type="hidden" name="key" value="(.+?)" />').findall(link)
         return match
+
+def musicnewrelease(url):
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+        match =  re.compile('<a class=".+?" href="(.+?)" title="(.+?)" style=".+?" data-tooltip=".+?"><img class="lazy" src=".+?" data-original=".+?"  width="140" height="139" alt=".+?" style=""><noscript><img src="(.+?)" width="140" height="139" alt=".+?" style=""></noscript></a>').findall(link)
+        for url, name, thumbnail in match:
+                addDir(name,url,30,thumbnail,None,'')
+        set_view('list')
+
+def billboard200(url):
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+        match =  re.compile('<p class="chart_info">.+?<a href="(.+?)" title="(.+?)">.+?</a>.+?<img typeof="foaf:Image" src="(.+?)" alt="(.+?)".+?</div>',re.DOTALL).findall(link)
+        for url, name, thumbnail, title in match:
+                addDir(name+ ' - ' +title,url,30,thumbnail,None,'')
+        nextpage = re.compile('<li class="pager-item"><a href="(.+?)">21 \xe2\x80\x93 40</a></li>').findall(link)
+        if nextpage:
+                addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.billboard.com/charts/billboard-200'+nextpage[0],39,'',None,'')
+        set_view('list')
+        
                 
 
 
@@ -654,6 +690,22 @@ def TVDBSearch(url):
 		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,thumbnail,None,'Movies')
         setView('movies', 'default')
 
+def SearchMusicArtist(url):
+        searchStr = ''
+        keyboard = xbmc.Keyboard(searchStr, "Search")
+        keyboard.doModal()
+        if (keyboard.isConfirmed() == False):
+                return
+        searchstring = keyboard.getText()
+        if len(searchstring) == 0:
+                return
+        newStr = searchstring.replace(' ','%20')
+        link = OPEN_URL(url+'/search/all/'+newStr)
+        match = re.compile('<a href="(.+?)" data-tooltip=".+?">\n                <img src="(.+?)" height="100" alt="(.+?)">\n            </a>').findall(link)
+        for url, thumbnail, name in match:
+                addDir(name,url,30,thumbnail,None,'')
+	set_view('list')
+
 #######################################################################################################################################################################
 
 def get_params():
@@ -866,6 +918,22 @@ elif mode==34:
 elif mode==35:
         print ''+url
         WATCH_LIST_SEARCH(name,url,iconimage)
+
+elif mode==36:
+        print ''+url
+        SearchMusicArtist(url)
+
+elif mode==37:
+        print ''+url
+        MUSICsearch()
+
+elif mode==38:
+        print ''+url
+        musicnewrelease(url)
+
+elif mode==39:
+        print ''+url
+        billboard200(url)
 		
 elif mode==309:
         print ''+url
