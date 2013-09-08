@@ -553,8 +553,10 @@ def Searchmovies(url):
         if len(searchstring) == 0:
                 return
         newStr = searchstring.replace(' ','%20')
-        onechannel = re.compile('<input type="hidden" name="key" value="(.+?)" />').findall(link)
-        link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key='+onechannel+'&search_section=1')
+        link2 = OPEN_URL(url)
+        onechannel = re.compile('<input type="hidden" name="key" value="(.+?)" />').findall(link2)
+        newStr2 = str(onechannel)
+        link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key='+newStr2+'&search_section=1')
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
