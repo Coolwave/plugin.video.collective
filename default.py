@@ -405,7 +405,7 @@ def musicnewrelease(url):
         response.close()
         match =  re.compile('<a class=".+?" href="(.+?)" title="(.+?)" style=".+?" data-tooltip=".+?"><img class="lazy" src=".+?" data-original=".+?"  width="140" height="139" alt=".+?" style=""><noscript><img src="(.+?)" width="140" height="139" alt=".+?" style=""></noscript></a>').findall(link)
         for url, name, thumbnail in match:
-                addDir(name,url,30,thumbnail,None,'')
+                addDir(name,url,40,thumbnail,None,'')
         set_view('list')
 
 def billboard200(url):
@@ -416,7 +416,7 @@ def billboard200(url):
         response.close()
         match =  re.compile('<p class="chart_info">.+?<a href="(.+?)" title="(.+?)">.+?</a>.+?<img typeof="foaf:Image" src="(.+?)" alt="(.+?)".+?</div>',re.DOTALL).findall(link)
         for url, name, thumbnail, title in match:
-                addDir(name+ ' - ' +title,url,30,thumbnail,None,'')
+                addDir(name+ ' - ' +title,url,40,thumbnail,None,'')
         nextpage = re.compile('<li class="pager-item"><a href="(.+?)">21 \xe2\x80\x93 40</a></li>').findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.billboard.com/charts/billboard-200'+nextpage[0],39,'',None,'')
@@ -520,9 +520,29 @@ def add_executeaddonstv(name):
         xbmc.executebuiltin('Container.Update('+contextommand+')')
        
 
+def add_executeaddonsmusic(name):
+        search = name
+        addons_name = []
+        addons_context = []
+        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.icefilms'):
+                addons_name.append('IceFilms')
+                addons_context.append('plugin://plugin.video.icefilms/?mode=555&url=http://www.icefilms.info/&search='+search+'&nextPage=1')
+        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.audio.xbmchubmusic'):
+                addons_name.append('xbmchubmusic')
+                addons_context.append('plugin://plugin.audio.xbmchubmusic/?mode=1&url=url&name='+name)
+        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.audio.searchmp3mobi'):
+                addons_name.append('searchmp3mobi')
+                addons_context.append('plugin://plugin.audio.searchmp3mobi/?mode=Search&query=wentworth&searchin=t')#&searchin=t')
+        
+        
+        dialog = xbmcgui.Dialog()
+        ret = dialog.select('Search For "'+search.title()+'" At The Addons Below', addons_name)
+        if ret == -1:
+                return
+        contextommand = addons_context[ret]
+        xbmc.executebuiltin('Container.Update('+contextommand+')')
 
-#title = _OA.queries.get('title', '')
-#video_type = _OA.queries.get('video_type', '')
+##############################################################################################################################################################################
 
 def IMDB_LISTS(url): 
         addDir('Watch List',IMDBTV_WATCHLIST,14,art+'imdb.png',None,'')
@@ -934,6 +954,10 @@ elif mode==38:
 elif mode==39:
         print ''+url
         billboard200(url)
+
+elif mode==40:
+        print ''+url
+        add_executeaddonsmusic(name)
 		
 elif mode==309:
         print ''+url
