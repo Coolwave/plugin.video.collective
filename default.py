@@ -116,12 +116,16 @@ def IMDbcat():
         set_view('list')
 
 def MUSICcat():
-        addDir('Billboard 200',billboard_200,39,art_('Lastest','Sub Menus'),None,'')
-        addDir('Featured',onechannel_featured,18,art_('Featured','Sub Menus'),None,'')
-        addDir('Popular',onechannel_popular,22,art_('Popular','Sub Menus'),None,'')
-        addDir('Ratings',onechannel_ratings,24,art_('Ratings','Sub Menus'),None,'')
+        addDir('Billboard 200','http://www1.billboard.com/charts/billboard-200',39,icon,None,'')
+        addDir('Country Albums','http://www1.billboard.com/charts/country-albums',39,icon,None,'')
+        addDir('HeatSeeker Albums','http://www1.billboard.com/charts/heatseekers-albums',39,icon,None,'')
+        addDir('Independent Albums','http://www1.billboard.com/charts/independent-albums',39,icon,None,'')
+        addDir('Catalogue Albums','http://www1.billboard.com/charts/catalog-albums',39,icon,None,'')
+        addDir('Folk Albums','http://www1.billboard.com/charts/folk-albums',39,icon,None,'')
+        addDir('Digital Albums','http://www1.billboard.com/charts/digital-albums',39,icon,None,'')
+        addDir('Genre','http://www.allmusic.com/genres',41,icon,None,'')
         addDir('New Release',allmusic_newrelease,38,art_('Release Date','Sub Menus'),None,'')
-        addDir('Search',allmusic_url,37,art_('Search','Sub Menus'),None,'')
+        addDir('Search by Artist','url',43,art_('Search','Sub Menus'),None,'')
 
 def MUSICsearch():
         addDir('Search by Artist',allmusic_url,36,art_('Search','Sub Menus'),None,'')
@@ -421,6 +425,25 @@ def billboard200(url):
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.billboard.com/charts/billboard-200'+nextpage[0],39,'',None,'')
         set_view('list')
+
+def BILLBOARD_ALBUM_LISTS(name,url):
+        link=OPEN_URL(url)
+        match = re.compile('"title" : "(.+?)"\r\n.+?"artist" : "(.+?)"\r\n.+?image" : "(.+?)"\r\n.+?"entityId" : ".+?"\r\n.+?"entityUrl" : "(.+?)"').findall(link)
+        for name, artist, iconimage, url in match:
+            artist=artist.replace('&','And')
+            url='http://www1.billboard.com'+url+'#'+url
+            if re.search('.gif',iconimage):
+                iconimage=icon
+            addDir(artist,url,40,iconimage,None,name)    
+        set_view('list')
+
+def Music_genre(url,iconimage):
+        link=OPEN_URL(url)
+        match=re.compile('<a href="/genre(.+?)">\n.+?span>(.+?)</span>').findall(link)
+        for url, name in match:
+                url=allmusic_url+'/genre'+url
+        addDir(name,url,12,iconimage,None,'')
+        setView('movies', 'default')
         
                 
 
@@ -530,9 +553,12 @@ def add_executeaddonsmusic(name):
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.audio.xbmchubmusic'):
                 addons_name.append('xbmchubmusic')
                 addons_context.append('plugin://plugin.audio.xbmchubmusic/?mode=1&url=url&name='+name)
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.audio.searchmp3mobi'):
+        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.audio.searchmp3mobi-master'):
                 addons_name.append('searchmp3mobi')
-                addons_context.append('plugin://plugin.audio.searchmp3mobi/?mode=Search&query=wentworth&searchin=t')#&searchin=t')
+                addons_context.append('plugin://plugin.audio.searchmp3mobi/?mode=Search&url=url&name='+name)
+        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.vevo'):
+                addons_name.append('vevo')
+                addons_context.append('plugin://plugin.video.vevo/?mode=searchArtists&url=url&name='+name)
         
         
         dialog = xbmcgui.Dialog()
@@ -725,6 +751,31 @@ def SearchMusicArtist(url):
         for url, thumbnail, name in match:
                 addDir(name,url,30,thumbnail,None,'')
 	set_view('list')
+
+def artist_search(url):
+        do_artist_search(SEARCH())
+                
+def do_artist_search(search_entered):
+        name=str(search_entered).replace('+','')
+        #fanart=get_fanart(name)
+        link = OPEN_URL('http://www.allmusic.com/search/artists/'+search_entered)
+
+        match=re.compile('<div class="photo">\n.+?a href="(.+?)" data-tooltip=".+?">\n.+?img src="(.+?).jpg.+?" height=".+?" alt="(.+?)">').findall(link)
+        for url,iconimage,artist in match:
+                url=allmusic_url+url+'/discography'
+                iconimage=iconimage.replace('JPG_170','JPG_400')+'.jpg'
+                addDir(artist,url,40,iconimage,None,artist)
+                set_view('list')
+
+def SEARCH():
+        search_entered = ''
+        keyboard = xbmc.Keyboard(search_entered, 'Search Music...XBMCHUB.COM')
+        keyboard.doModal()
+        if keyboard.isConfirmed():
+                search_entered = keyboard.getText() .replace(' ','+')  # sometimes you need to replace spaces with + or %20
+                if search_entered == None:
+                        return False
+        return search_entered 
 
 #######################################################################################################################################################################
 
@@ -953,11 +1004,23 @@ elif mode==38:
 
 elif mode==39:
         print ''+url
-        billboard200(url)
+        BILLBOARD_ALBUM_LISTS(name,url)
 
 elif mode==40:
         print ''+url
         add_executeaddonsmusic(name)
+
+elif mode==41:
+        print ''+url
+        Music_genre(url,iconimage)
+
+elif mode==42:
+        print ''+url
+        do_artist_search(search_entered)
+
+elif mode==43:
+        print ''+url
+        artist_search(url)
 		
 elif mode==309:
         print ''+url
