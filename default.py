@@ -53,25 +53,25 @@ IMDB_LIST = settings.imdb_list_url()
 
 #Metahandler
 def GRABMETA(name,types,year=None):
-	type = types
-	if year=='': year=None
-	EnableMeta = local.getSetting('Enable-Meta')
-	#
-	if year==None:
-		try: year=re.search('\s*\((\d\d\d\d)\)',name).group(1)
-		except: year=None
-	if year is not None: name=name.replace(' ('+year+')','').replace('('+year+')','')
-	#
-	if EnableMeta == 'true':
-		if 'Movie' in type:
-			### grab.get_meta(media_type, name, imdb_id='', tmdb_id='', year='', overlay=6)
-			meta = grab.get_meta('movie',name,'',None,year,overlay=6)
-			infoLabels = {'rating': meta['rating'],'duration': meta['duration'],'genre': meta['genre'],'mpaa':"rated %s"%meta['mpaa'],'plot': meta['plot'],'title': meta['title'],'writer': meta['writer'],'cover_url': meta['cover_url'],'director': meta['director'],'cast': meta['cast'],'backdrop_url': meta['backdrop_url'],'backdrop_url': meta['backdrop_url'],'tmdb_id': meta['tmdb_id'],'year': meta['year']}
-		elif 'tvshow' in type:
-			meta = grab.get_meta('tvshow',name,'','',year,overlay=6)
-			infoLabels = {'rating': meta['rating'],'genre': meta['genre'],'mpaa':"rated %s"%meta['mpaa'],'plot': meta['plot'],'title': meta['title'],'cover_url': meta['cover_url'],'cast': meta['cast'],'studio': meta['studio'],'banner_url': meta['banner_url'],'backdrop_url': meta['backdrop_url'],'status': meta['status']}
-	else: infoLabels=[]
-	return infoLabels
+        type = types
+        if year=='': year=None
+        EnableMeta = local.getSetting('Enable-Meta')
+        #
+        if year==None:
+                try: year=re.search('\s*\((\d\d\d\d)\)',name).group(1)
+                except: year=None
+        if year is not None: name=name.replace(' ('+year+')','').replace('('+year+')','')
+        #
+        if EnableMeta == 'true':
+                if 'Movie' in type:
+                        ### grab.get_meta(media_type, name, imdb_id='', tmdb_id='', year='', overlay=6)
+                        meta = grab.get_meta('movie',name,'',None,year,overlay=6)
+                        infoLabels = {'rating': meta['rating'],'duration': meta['duration'],'genre': meta['genre'],'mpaa':"rated %s"%meta['mpaa'],'plot': meta['plot'],'title': meta['title'],'writer': meta['writer'],'cover_url': meta['cover_url'],'director': meta['director'],'cast': meta['cast'],'backdrop_url': meta['backdrop_url'],'backdrop_url': meta['backdrop_url'],'tmdb_id': meta['tmdb_id'],'year': meta['year']}
+                elif 'tvshow' in type:
+                        meta = grab.get_meta('tvshow',name,'','',year,overlay=6)
+                        infoLabels = {'rating': meta['rating'],'genre': meta['genre'],'mpaa':"rated %s"%meta['mpaa'],'plot': meta['plot'],'title': meta['title'],'cover_url': meta['cover_url'],'cast': meta['cast'],'studio': meta['studio'],'banner_url': meta['banner_url'],'backdrop_url': meta['backdrop_url'],'status': meta['status']}
+        else: infoLabels=[]
+        return infoLabels
 
 ######################################################################################################################################################
 
@@ -102,9 +102,9 @@ def MOVIEScat():
         addDir('Popular',onechannel_popular,22,art_('Popular','Sub Menus'),None,'')
         addDir('Ratings',onechannel_ratings,24,art_('Ratings','Sub Menus'),None,'')
         addDir('Release Date',onechannel_releasedate,26,art_('Release Date','Sub Menus'),None,'')
-        addDir('Genre',movie_url,4,art_('Genre','Sub Menus'),None,'')
+        addDir('Genre','http://www.imdb.com/genre',33,art_('Genre','Sub Menus'),None,'')
         addDir('IMDb',IMDb_url,16,art_('IMDb','Sub Menus'),None,'')
-        addDir('Search',onechannel_base,9,art_('Search','Sub Menus'),None,'')
+        addDir('Search',IMDb_url,32,art_('Search','Sub Menus'),None,'')
         set_view('list')
 
 def IMDbcat():
@@ -174,9 +174,9 @@ def IMDbrate(url):
         response.close()
         match = re.compile('<a href="(.+?)" title="(.+?)"><img src=".+?" height="74" width="54" alt=".+?" title=".+?"></a>').findall(link)
         for url, name in match:
-                name=name.replace("'","&#x23;s")
-                if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
-                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
+                name1 = name.replace('&#x27;',"'")
+                if EnableMeta == 'true':  addDir(name1.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
+                if EnableMeta == 'false': addDir(name1.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<a href="(.+?)">Next.+?</a>').findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.imdb.com/'+nextpage[0],17,'',None,'')
@@ -335,7 +335,7 @@ def onechanneltvreleasedate(url):
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],18,'',None,'')
         set_view('tvshows')
-		
+                
 def ALLTIMEIMDB(url):
         req = urllib2.Request(url)
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
@@ -375,7 +375,7 @@ def ALLTIMEIMDB(url):
                 set_view('list') 
         except:
                 pass
-        addDir('[COLOR red][B]<< Return To TV Menu[/B][/COLOR]','url',12,'',None,'')    
+        addDir('[COLOR red][B]<< Return To Movie Menu[/B][/COLOR]','url',16,'',None,'')    
         set_view('list') 
 
 def IMDBGENRE(url):
@@ -437,12 +437,12 @@ def BILLBOARD_ALBUM_LISTS(name,url):
             addDir(artist,url,40,iconimage,None,name)    
         set_view('list')
 
-def Music_genre(url,iconimage):
+def Music_genre(url):
         link=OPEN_URL(url)
         match=re.compile('<a href="/genre(.+?)">\n.+?span>(.+?)</span>').findall(link)
         for url, name in match:
                 url=allmusic_url+'/genre'+url
-        addDir(name,url,12,iconimage,None,'')
+        addDir(name,url,40,'',None,'')
         setView('movies', 'default')
         
                 
@@ -467,31 +467,31 @@ def add_executeaddons(name):
                 addons_context.append('plugin://plugin.video.icefilms/?mode=555&url=http://www.icefilms.info/&search='+search+'&nextPage=1')
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.1channel'):
                 addons_name.append('1channel (Movies)')
-                addons_context.append('plugin://plugin.video.1channel/?mode=7000&section=&query='+name)
+                addons_context.append('plugin://plugin.video.1channel/?mode=7000&section=&query='+search)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.alluc'):
                 addons_name.append('Alluc')
-                addons_context.append('plugin://plugin.video.alluc/?mode=22&url=url&name='+name)
+                addons_context.append('plugin://plugin.video.alluc/?mode=22&url=url&name='+search)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.movie25'):
                 addons_name.append('Mashup')
-                addons_context.append('plugin://plugin.video.movie25/?mode=4&url='+name)
+                addons_context.append('plugin://plugin.video.movie25/?mode=4&url='+search)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.whatthefurk'):
                 addons_name.append('WhatTheFurk')
-                addons_context.append('plugin://plugin.video.whatthefurk/?mode=imdb result menu&url=url&name='+name)
+                addons_context.append('plugin://plugin.video.whatthefurk/?mode=imdb result menu&url=url&name='+search)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.theroyalwe'):
                 addons_name.append('TheRoyalWe (Movies)')
-                addons_context.append('plugin://plugin.video.theroyalwe/?mode=1250&url='+name+'')
+                addons_context.append('plugin://plugin.video.theroyalwe/?mode=1250&url='+search+'')
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.OCM'):
                 addons_name.append('OCM')
-                addons_context.append('plugin://plugin.video.OCM/?mode=Search&url='+name)
+                addons_context.append('plugin://plugin.video.OCM/?mode=Search&url='+search)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.moviekingdom'):
                 addons_name.append('MovieKingdom')
-                addons_context.append('plugin://plugin.video.moviekingdom/?mode=200&url='+name+'&imdb=SRO')
+                addons_context.append('plugin://plugin.video.moviekingdom/?mode=200&url='+search+'&imdb=SRO')
 
         
         dialog = xbmcgui.Dialog()
         ret = dialog.select('Search For "'+search.title()+'" At The Addons Below', addons_name)
         if ret == -1:
-                return
+                return 
         contextommand = addons_context[ret]
         xbmc.executebuiltin('Container.Update('+contextommand+')')
         
@@ -514,25 +514,25 @@ def add_executeaddonstv(name):
                 addons_context.append('projectfreetv/?mode=search&url=url&name='+search)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.movie25'):
                 addons_name.append('Rlsmix (TV)')
-                addons_context.append('movie25/?mode=137&url='+name)
+                addons_context.append('movie25/?mode=137&url='+search)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.tubeplus'):
                 addons_name.append('TubePlus')
-                addons_context.append('plugin://plugin.video.tubeplus/?mode=130&url=url&name='+name)
+                addons_context.append('plugin://plugin.video.tubeplus/?mode=130&url=url&name='+search)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.alluc'):
                 addons_name.append('Alluc')
-                addons_context.append('plugin://plugin.video.alluc/?mode=22&url=url&name='+name)
+                addons_context.append('plugin://plugin.video.alluc/?mode=22&url=url&name='+search)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.whatthefurk'):
                 addons_name.append('WhatTheFurk')
-                addons_context.append('plugin://plugin.video.whatthefurk/?mode=imdb result menu&url=url&name='+name)
+                addons_context.append('plugin://plugin.video.whatthefurk/?mode=imdb result menu&url=url&name='+search)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.theroyalwe'):
                 addons_name.append('TheRoyalWe (TV)')
-                addons_context.append('plugin://plugin.video.theroyalwe/?mode=1150&url='+name+'')
+                addons_context.append('plugin://plugin.video.theroyalwe/?mode=1150&url='+search+'')
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.tv-release'):
                 addons_name.append('TV-Release (TV)')
-                addons_context.append('plugin://plugin.video.tv-release/?mode=20&url=url&name='+name)
+                addons_context.append('plugin://plugin.video.tv-release/?mode=20&url=url&name='+search)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.hdtv-release'):
                 addons_name.append('HDTV-Release (TV)')
-                addons_context.append('plugin://plugin.video.hdtv-release/?mode=GetSearchQuery&url='+name)
+                addons_context.append('plugin://plugin.video.hdtv-release/?mode=GetSearchQuery&url='+search)
 
         
         dialog = xbmcgui.Dialog()
@@ -642,7 +642,7 @@ def Searchmovies(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
         set_view('list')
 
 def Searchtvshows(url):
@@ -660,7 +660,7 @@ def Searchtvshows(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
         set_view('list')
 
 def IMDB_SEARCH(url):
@@ -674,13 +674,14 @@ def IMDB_SEARCH(url):
         if len(searchstring) == 0:
                 return
         newStr = searchstring.replace(' ','%20')
-        #http://www.imdb.com'/search/title?title='+newStr+'&title_type=feature,tv_movie,documentary,short,video,unknown'
-        link = OPEN_URL(url+'/search/title?title='+newStr+'&title_type=feature,tv_movie,documentary,short,video,unknown')
+        #http://www.imdb.com/find?q='+newStr+'&s=all'
+        link = OPEN_URL(url+'/search/title?title='+newStr+'&title_type=feature,tv_movie,documentary,video')
         
-        match =  re.compile('<a href=".+?" title="(.+?)"><img src="(.+?)" height="74" width="54" alt=".+?" title=".+?"></a>').findall(link)
-        for name, thumbnail in match:
-                if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
+        match =  re.compile('<a href="(.+?)" title="(.+?)"><img src="(.+?)" height="74" width="54" alt=".+?" title=".+?"></a>').findall(link)
+        for url, name, thumbnail in match:
+                name1 = name.replace('&#x27;','')
+                if EnableMeta == 'true':  addDir(name1.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
+                if EnableMeta == 'false': addDir(name1.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
         set_view('list')
 
 def IMDB_SEARCHTV(url):
@@ -733,7 +734,7 @@ def TVDBSearch(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,30,'','Movie','Movies')
-		if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,thumbnail,None,'Movies')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,thumbnail,None,'Movies')
         setView('movies', 'default')
 
 def SearchMusicArtist(url):
@@ -750,7 +751,7 @@ def SearchMusicArtist(url):
         match = re.compile('<a href="(.+?)" data-tooltip=".+?">\n                <img src="(.+?)" height="100" alt="(.+?)">\n            </a>').findall(link)
         for url, thumbnail, name in match:
                 addDir(name,url,30,thumbnail,None,'')
-	set_view('list')
+        set_view('list')
 
 def artist_search(url):
         do_artist_search(SEARCH())
@@ -780,57 +781,57 @@ def SEARCH():
 #######################################################################################################################################################################
 
 def get_params():
-	param=[]
-	paramstring=sys.argv[2]
-	if len(paramstring)>=2:
-		params=sys.argv[2]
-		cleanedparams=params.replace('?','')
-		if (params[len(params)-1]=='/'): params=params[0:len(params)-2]
-		pairsofparams=cleanedparams.split('&')
-		param={}
-		for i in range(len(pairsofparams)):
-			splitparams={}
-			splitparams=pairsofparams[i].split('=')
-			if (len(splitparams))==2: param[splitparams[0]]=splitparams[1]
-	return param
+        param=[]
+        paramstring=sys.argv[2]
+        if len(paramstring)>=2:
+                params=sys.argv[2]
+                cleanedparams=params.replace('?','')
+                if (params[len(params)-1]=='/'): params=params[0:len(params)-2]
+                pairsofparams=cleanedparams.split('&')
+                param={}
+                for i in range(len(pairsofparams)):
+                        splitparams={}
+                        splitparams=pairsofparams[i].split('=')
+                        if (len(splitparams))==2: param[splitparams[0]]=splitparams[1]
+        return param
 
 def addLink(name,url,iconimage):
-	ok=True
-	liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-	liz.setInfo( type="Video", infoLabels={ "Title": name } )
-	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz,isFolder=False)
-	return ok
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+        liz.setInfo( type="Video", infoLabels={ "Title": name } )
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz,isFolder=False)
+        return ok
 
 
 def addDir(name,url,mode,iconimage,types,favtype):
-	ok=True
-	type = types
-	if type != None: infoLabels = GRABMETA(name,types)
-	else: infoLabels = {'title':name}
-	try: img = infoLabels['cover_url']
-	except: img= iconimage
-	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=img)
-	liz.setInfo( type="Video", infoLabels= infoLabels)
-	try: liz.setProperty( "Fanart_Image", infoLabels['backdrop_url'] )
-	except: t=''
-	contextMenuItems = []
-	contextMenuItems.append(('Movie Information', 'XBMC.Action(Info)'))
-	liz.addContextMenuItems(contextMenuItems, replaceItems=False)
-	#Universal Favorites
-	if 'Movies' in favtype:
-		contextMenuItems.append(('Add to Favorites', fav.add_directory(name, u, section_title='Movies')))
-		liz.addContextMenuItems(contextMenuItems, replaceItems=True)
-	elif 'TV-Shows' in favtype:
-		contextMenuItems.append(('Add to Favorites', fav.add_directory(name, u, section_title='TV-Shows')))
-		liz.addContextMenuItems(contextMenuItems, replaceItems=True)
-	else:
-		contextMenuItems.append(('Add to Favorites', fav.add_directory(name, u, section_title='Other Favorites')))
-		liz.addContextMenuItems(contextMenuItems, replaceItems=True)
-	
+        ok=True
+        type = types
+        if type != None: infoLabels = GRABMETA(name,types)
+        else: infoLabels = {'title':name}
+        try: img = infoLabels['cover_url']
+        except: img= iconimage
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=img)
+        liz.setInfo( type="Video", infoLabels= infoLabels)
+        try: liz.setProperty( "Fanart_Image", infoLabels['backdrop_url'] )
+        except: t=''
+        contextMenuItems = []
+        contextMenuItems.append(('Movie Information', 'XBMC.Action(Info)'))
+        liz.addContextMenuItems(contextMenuItems, replaceItems=False)
+        #Universal Favorites
+        if 'Movies' in favtype:
+                contextMenuItems.append(('Add to Favorites', fav.add_directory(name, u, section_title='Movies')))
+                liz.addContextMenuItems(contextMenuItems, replaceItems=True)
+        elif 'TV-Shows' in favtype:
+                contextMenuItems.append(('Add to Favorites', fav.add_directory(name, u, section_title='TV-Shows')))
+                liz.addContextMenuItems(contextMenuItems, replaceItems=True)
+        else:
+                contextMenuItems.append(('Add to Favorites', fav.add_directory(name, u, section_title='Other Favorites')))
+                liz.addContextMenuItems(contextMenuItems, replaceItems=True)
+        
 #####################################################################################################################################################################
-	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
-	return ok
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+        return ok
 
 params=get_params()
 url=None; name=None; mode=None
@@ -977,7 +978,7 @@ elif mode==31:
 elif mode==32:
         print ''+url
         IMDB_SEARCH(url)
-		
+                
 elif mode==33:
         print ''+url
         IMDBGENRE(url)
@@ -1012,7 +1013,7 @@ elif mode==40:
 
 elif mode==41:
         print ''+url
-        Music_genre(url,iconimage)
+        Music_genre(url)
 
 elif mode==42:
         print ''+url
@@ -1021,7 +1022,7 @@ elif mode==42:
 elif mode==43:
         print ''+url
         artist_search(url)
-		
+                
 elif mode==309:
         print ''+url
         addon.addon.openSettings()
