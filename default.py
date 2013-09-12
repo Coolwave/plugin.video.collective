@@ -92,7 +92,7 @@ def TVSHOWScat():
         addDir('Ratings',onechannel_ratingstv,25,art_('Ratings','Sub Menus'),None,'')
         addDir('Release Date',onechannel_releasedatetv,27,art_('Release Date','Sub Menus'),None,'')
         addDir('Genre','http://www.imdb.com/genre',45,art_('Genre','Sub Menus'),None,'')
-        addDir('IMDb',IMDb_url,16,art_('IMDb','Sub Menus'),None,'')
+        addDir('IMDb',IMDb_url,46,art_('IMDb','Sub Menus'),None,'')
         addDir('Search',IMDb_url,44,art_('Search','Sub Menus'),None,'')
         set_view('list') 
        
@@ -112,8 +112,14 @@ def IMDbcat():
         addDir('Top 250',IMDb250_url,17,art_('Top 250','Sub Menus'),None,'')
         addDir('Genre','http://www.imdb.com/genre',33,art_('Genre','Sub Menus'),None,'')
         addDir('IMDb watchlist',movie_url,13,art_('IMDb watchlist','Sub Menus'),None,'')
-        addDir('Search','url',32,art_('Search','Sub Menus'),None,'')
+        addDir('Search',IMDb_url,32,art_('Search','Sub Menus'),None,'')
         set_view('list')
+
+def IMDbtvcat():
+        addDir('Genre','http://www.imdb.com/genre',45,art_('Genre','Sub Menus'),None,'')
+        addDir('IMDb watchlist',IMDb_url,13,art_('IMDb watchlist','Sub Menus'),None,'')
+        addDir('Search',IMDb_url,44,art_('Search','Sub Menus'),None,'')
+        set_view('list')        
 
 def MUSICcat():
         addDir('Billboard 200','http://www1.billboard.com/charts/billboard-200',39,icon,None,'')
@@ -174,9 +180,9 @@ def IMDbrate(url):
         response.close()
         match = re.compile('<a href="(.+?)" title="(.+?)"><img src=".+?" height="74" width="54" alt=".+?" title=".+?"></a>').findall(link)
         for url, name in match:
-                name1 = name.replace('&#x27;',"'")
-                if EnableMeta == 'true':  addDir(name1.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
-                if EnableMeta == 'false': addDir(name1.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
+                name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace('&#x22;','"')
+                if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<a href="(.+?)">Next.+?</a>').findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.imdb.com/'+nextpage[0],17,'',None,'')
@@ -1029,6 +1035,10 @@ elif mode==44:
 elif mode==45:
         print ''+url
         IMDBGENRETV(url)
+
+elif mode==46:
+        print ''+url
+        IMDbtvcat()
                 
 elif mode==309:
         print ''+url
