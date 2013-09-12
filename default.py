@@ -147,11 +147,7 @@ def TVSHOWSgene(url):#  cause mode is empty in this one it will go back to first
 ##############################################################################################################################
 
 def NZBmovie(url):
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match =  re.compile('<h3> <a href="(.+?)" class="movie-title" title=".+?">(.+?)</a> </h3>.+?<div class="poster">.+?<img src="(.+?)">',re.DOTALL).findall(link)
         for url, name, thumbnail in match:
                 addDir(name,url,12,thumbnail,'')
@@ -161,11 +157,7 @@ def NZBmovie(url):
 
 def IMDbInTheaters(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match =  re.compile('<div class=".+?">\n<img class=".+?"\nheight="209"\nwidth="140"\nalt=".+?"\ntitle="(.+?)"\nsrc="(.+?)"\nitemprop="image" />\n</div>').findall(link)
         for name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
@@ -173,11 +165,7 @@ def IMDbInTheaters(url):
 
 def IMDbrate(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match = re.compile('<a href="(.+?)" title="(.+?)"><img src=".+?" height="74" width="54" alt=".+?" title=".+?"></a>').findall(link)
         for url, name in match:
                 name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace('&#x22;','"')
@@ -189,11 +177,7 @@ def IMDbrate(url):
 
 def onechannelmfeature(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
@@ -204,14 +188,10 @@ def onechannelmfeature(url):
 
 def onechanneltvfeature(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
-                if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
+                if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
@@ -220,11 +200,7 @@ def onechanneltvfeature(url):
 
 def onechannellastest(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
@@ -235,14 +211,10 @@ def onechannellastest(url):
 
 def onechannellastesttv(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
-                if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
+                if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
@@ -251,11 +223,7 @@ def onechannellastesttv(url):
 
 def onechannelmpopular(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
@@ -266,14 +234,10 @@ def onechannelmpopular(url):
 
 def onechanneltvpopular(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
-                if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
+                if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
@@ -282,11 +246,7 @@ def onechanneltvpopular(url):
 
 def onechannelmratings(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
@@ -297,14 +257,10 @@ def onechannelmratings(url):
 
 def onechanneltvratings(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
-                if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
+                if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
@@ -313,11 +269,7 @@ def onechanneltvratings(url):
 
 def onechannelmreleasedate(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
@@ -328,14 +280,10 @@ def onechannelmreleasedate(url):
 
 def onechanneltvreleasedate(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
-                if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
+                if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
@@ -344,10 +292,7 @@ def onechanneltvreleasedate(url):
                 
 def ALLTIMEIMDB(url):
         req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match = re.compile('<img src="(.+?)" height="74" width="54" alt=".+?" title="(.+?)"></a>\n  </td>\n  <td class="title">\n    \n\n<span class="wlb_wrapper" data-tconst="(.+?)" data-size="small" data-caller-name="search"></span>\n\n    <a href=".+?">.+?</a>\n    <span class="year_type">.+?</span><br>\n<div class="user_rating">\n\n\n<div class="rating rating-list" data-auth=".+?" id=".+?" data-ga-identifier="advsearch"\n title=".+?click stars to rate">\n<span class="rating-bg">&nbsp;</span>\n<span class="rating-imdb" style="width.+?">&nbsp;</span>\n<span class="rating-stars">\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>1</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>2</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>3</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>4</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>5</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>6</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>7</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>8</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>9</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>10</span></a>\n</span>\n<span class="rating-rating"><span class="value">.+?</span><span class="grey">/</span><span class="grey">10</span></span>\n<span class="rating-cancel"><a href=".+?" title="Delete" rel="nofollow"><span>X</span></a></span>\n&nbsp;</div>\n\n</div>\n<span class="outline">(.+?)</span>').findall(link)
         nextp=re.compile('<a href="(.+?)">Next&nbsp;').findall(link)
         try:
@@ -385,11 +330,7 @@ def ALLTIMEIMDB(url):
         set_view('list') 
 
 def IMDBGENRE(url):
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match = re.compile('<a href="/genre/(.+?)">(.+?)</a>').findall(link)
         for url1, name, in match:
                 url='http://www.imdb.com/search/title?genres=%s&title_type=feature&sort=moviemeter,asc'% (url1)
@@ -398,11 +339,7 @@ def IMDBGENRE(url):
                 set_view('list')
 
 def IMDBGENRETV(url):
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match = re.compile('<a href="/genre/(.+?)">(.+?)</a>').findall(link)
         for url1, name, in match:
                 url='http://www.imdb.com/search/title?genres=%s&title_type=tv_movie,tv_series,tv_special'% (url1)
@@ -412,31 +349,19 @@ def IMDBGENRETV(url):
 
 def onechannelinfo(url):
         url = 'http://www.primewire.ag'
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match = re.compile('<input type="hidden" name="key" value="(.+?)" />').findall(link)
         return match
 
 def musicnewrelease(url):
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match =  re.compile('<a class=".+?" href="(.+?)" title="(.+?)" style=".+?" data-tooltip=".+?"><img class="lazy" src=".+?" data-original=".+?"  width="140" height="139" alt=".+?" style=""><noscript><img src="(.+?)" width="140" height="139" alt=".+?" style=""></noscript></a>').findall(link)
         for url, name, thumbnail in match:
                 addDir(name,url,40,thumbnail,None,'')
         set_view('list')
 
 def billboard200(url):
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match =  re.compile('<p class="chart_info">.+?<a href="(.+?)" title="(.+?)">.+?</a>.+?<img typeof="foaf:Image" src="(.+?)" alt="(.+?)".+?</div>',re.DOTALL).findall(link)
         for url, name, thumbnail, title in match:
                 addDir(name+ ' - ' +title,url,40,thumbnail,None,'')
@@ -596,11 +521,7 @@ def IMDB_LISTS(url):
         if local.getSetting('message') == 'false':
                 xbmcgui.Dialog().ok('The Collective Information','            For Full Support For This Plugin Please Visit','                    [COLOR yellow][B]WWW.XBMCHUB.COM[/B][/COLOR]','Please Turn Off Message in Addon Settings')
         url=IMDB_LIST
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         match = re.compile('<div class="list_name"><b><a    onclick=".+?"     href="(.+?)"    >(.+?)</a>').findall(link)
         for url, name in match:
             url='http://www.imdb.com'+str(url)+'?start=1&view=grid&sort=listorian:asc&defaults=1'   
@@ -608,11 +529,7 @@ def IMDB_LISTS(url):
             set_view('list')  
            
 def WATCH_TV_LIST(url):
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()
+        link=OPEN_URL(url)
         link=str(link).replace('\n','').replace('src="http://i.media-imdb.com/images/SFaa265aa19162c9e4f3781fbae59f856d/nopicture/medium/film.png" ','')
         link=link.split('<div class="list grid">')[1]
         link=link.split('<div class="see-more">')[0]
@@ -678,7 +595,7 @@ def Searchtvshows(url):
         link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key=(.+?)&search_section=2')
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
-                if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
+                if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
         set_view('list')
 
@@ -720,7 +637,7 @@ def IMDB_SEARCHTV(url):
         match =  re.compile('<a href="(.+?)" title="(.+?)"><img src="(.+?)" height="74" width="54" alt=".+?" title=".+?"></a>').findall(link)
         for url, name, thumbnail in match:
                 name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace(' TV Series','').replace('&#x22;','"')
-                if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','tvshows','TV-Shows')
+                if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'TV-Shows')
         set_view('list')
 
@@ -738,7 +655,7 @@ def TVDBSearch(url):
         link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key=fdd6063da4415536&search_section=2')
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
-                if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
+                if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,30,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,thumbnail,None,'TV-Shows')
         setView('movies', 'default')
 
