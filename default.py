@@ -91,9 +91,9 @@ def TVSHOWScat():
         addDir('Popular',onechannel_populartv,23,art_('Popular','Sub Menus'),None,'')
         addDir('Ratings',onechannel_ratingstv,25,art_('Ratings','Sub Menus'),None,'')
         addDir('Release Date',onechannel_releasedatetv,27,art_('Release Date','Sub Menus'),None,'')
-        addDir('Genre',tv_url,5,art_('Genre','Sub Menus'),None,'')
-        addDir('TVDB',tv_url,5,art_('TVDB','Sub Menus'),None,'')
-        addDir('Search',onechannel_base,28,art_('Search','Sub Menus'),None,'')
+        addDir('Genre','http://www.imdb.com/genre',45,art_('Genre','Sub Menus'),None,'')
+        addDir('IMDb',IMDb_url,16,art_('IMDb','Sub Menus'),None,'')
+        addDir('Search',IMDb_url,44,art_('Search','Sub Menus'),None,'')
         set_view('list') 
        
 def MOVIEScat():
@@ -349,7 +349,7 @@ def ALLTIMEIMDB(url):
         except:
                 pass       
         for iconimage, name,url, description in match:
-            name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And')
+            name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace(' TV Series','')
             iconimage1 = iconimage
             url = 'http://www.imdb.com/title/'+str(url)+'/'
             regex=re.compile('(.+?)_V1.+?.jpg')
@@ -366,7 +366,7 @@ def ALLTIMEIMDB(url):
                     fanart= '%s_V1.jpg'%(match.group(1))
             except:
                     pass
-                    addDir(name,url,3,iconimage,None,description)   
+                    addDir(name,url,30,iconimage,None,description)   
                     set_view('list') 
         try:
                 url='http://www.imdb.com'+str(nextp1)
@@ -375,7 +375,7 @@ def ALLTIMEIMDB(url):
                 set_view('list') 
         except:
                 pass
-        addDir('[COLOR red][B]<< Return To Movie Menu[/B][/COLOR]','url',16,'',None,'')    
+        addDir('[COLOR red][B]<< Return To Main Menu[/B][/COLOR]','url','','',None,'')    
         set_view('list') 
 
 def IMDBGENRE(url):
@@ -387,6 +387,19 @@ def IMDBGENRE(url):
         match = re.compile('<a href="/genre/(.+?)">(.+?)</a>').findall(link)
         for url1, name, in match:
                 url='http://www.imdb.com/search/title?genres=%s&title_type=feature&sort=moviemeter,asc'% (url1)
+                iconimage=art+url1+'.png'
+                addDir(name,url,34,iconimage,None,'')
+                set_view('list')
+
+def IMDBGENRETV(url):
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        response = urllib2.urlopen(req)
+        link=response.read()
+        response.close()
+        match = re.compile('<a href="/genre/(.+?)">(.+?)</a>').findall(link)
+        for url1, name, in match:
+                url='http://www.imdb.com/search/title?genres=%s&title_type=tv_movie,tv_series,tv_special'% (url1)
                 iconimage=art+url1+'.png'
                 addDir(name,url,34,iconimage,None,'')
                 set_view('list')
@@ -679,45 +692,31 @@ def IMDB_SEARCH(url):
         
         match =  re.compile('<a href="(.+?)" title="(.+?)"><img src="(.+?)" height="74" width="54" alt=".+?" title=".+?"></a>').findall(link)
         for url, name, thumbnail in match:
-                name1 = name.replace('&#x27;','')
-                if EnableMeta == 'true':  addDir(name1.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
-                if EnableMeta == 'false': addDir(name1.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
+                name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace('&#x22;','"')
+                if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
         set_view('list')
 
 def IMDB_SEARCHTV(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        search_entered = ''
-        keyboard = xbmc.Keyboard(search_entered, 'Search The Collective...XBMCHUB.COM')
+        searchStr = ''
+        keyboard = xbmc.Keyboard(searchStr, "Search")
         keyboard.doModal()
-        if keyboard.isConfirmed():
-            search_entered = keyboard.getText() .replace(' ','+')  # sometimes you need to replace spaces with + or %20#
-            if search_entered == None:
-                return False   
-        url= 'http://www.imdb.com/search/title?title=%s&title_type=feature'% (search_entered)           
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', USER_AGENT)
-        response = urllib2.urlopen(req)
-        link=response.read()
-        response.close()  
-        match=re.compile('title="(.+?)"><img src="(.+?)"').findall(link)
-        for name,iconimage in match:
-            regex=re.compile('(.+?)_V1.+?.jpg')
-            regex1=re.compile('(.+?).gif')
-            try:
-                    match = regex.search(iconimage)
-                    iconimage= '%s_V1_.SX593_SY799_.jpg'%(match.group(1))
-                    fanart= '%s_V1.jpg'%(match.group(1))
-            except:
-                    pass
-            try:    
-                    match= regex1.search(iconimage)
-                    iconimage= '%s.gif'%(match.group(1))
-                    fanart= '%s_V1.jpg'%(match.group(1))
-            except:
-                    pass
-            if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
-            if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,iconimage,None,'Movies')
-            set_view('list')
+        if (keyboard.isConfirmed() == False):
+                return
+        searchstring = keyboard.getText()
+        if len(searchstring) == 0:
+                return
+        newStr = searchstring.replace(' ','%20')
+        #http://www.imdb.com/find?q='+newStr+'&s=all'
+        link = OPEN_URL(url+'/search/title?title='+newStr+'&title_type=tv_movie,tv_series,tv_episode,tv_special,mini_series')
+        
+        match =  re.compile('<a href="(.+?)" title="(.+?)"><img src="(.+?)" height="74" width="54" alt=".+?" title=".+?"></a>').findall(link)
+        for url, name, thumbnail in match:
+                name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace(' TV Series','').replace('&#x22;','"')
+                if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','tvshows','TV-Shows')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'TV-Shows')
+        set_view('list')
 
 def TVDBSearch(url):
         EnableMeta = local.getSetting('Enable-Meta')
@@ -733,8 +732,8 @@ def TVDBSearch(url):
         link = OPEN_URL(url+'/index.php?search_keywords='+newStr+'&key=fdd6063da4415536&search_section=2')
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, thumbnail in match:
-                if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,30,'','Movie','Movies')
-                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,thumbnail,None,'Movies')
+                if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,30,'','tvshows','TV-Shows')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,thumbnail,None,'TV-Shows')
         setView('movies', 'default')
 
 def SearchMusicArtist(url):
@@ -1022,6 +1021,14 @@ elif mode==42:
 elif mode==43:
         print ''+url
         artist_search(url)
+
+elif mode==44:
+        print ''+url
+        IMDB_SEARCHTV(url)
+
+elif mode==45:
+        print ''+url
+        IMDBGENRETV(url)
                 
 elif mode==309:
         print ''+url
