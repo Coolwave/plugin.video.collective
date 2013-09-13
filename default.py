@@ -125,7 +125,7 @@ def MUSICcat():
         addDir('Catalogue Albums','http://www1.billboard.com/charts/catalog-albums',39,icon,None,'')
         addDir('Folk Albums','http://www1.billboard.com/charts/folk-albums',39,icon,None,'')
         addDir('Digital Albums','http://www1.billboard.com/charts/digital-albums',39,icon,None,'')
-        addDir('Genre','http://www.allmusic.com/genres',41,icon,None,'')
+        #addDir('Genre','http://www.allmusic.com/genres',41,icon,None,'')
         addDir('New Release',allmusic_newrelease,38,art_('Release Date','Sub Menus'),None,'')
         addDir('Search by Artist','url',43,art_('Search','Sub Menus'),None,'')
 
@@ -533,7 +533,7 @@ def add_executeaddonsmusic(name):
                 addons_context.append('plugin://plugin.video.icefilms/?mode=555&url=http://www.icefilms.info/&search='+search+'&nextPage=1')
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.audio.xbmchubmusic'):
                 addons_name.append('xbmchubmusic')
-                addons_context.append('plugin://plugin.audio.xbmchubmusic/?mode=1&url=url&name='+name)
+                addons_context.append('plugin://plugin.audio.xbmchubmusic/?mode=216&url=url&name='+name)
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.audio.searchmp3mobi-master'):
                 addons_name.append('searchmp3mobi')
                 addons_context.append('plugin://plugin.audio.searchmp3mobi/?mode=Search&url=url&name='+name)
