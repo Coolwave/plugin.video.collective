@@ -47,10 +47,6 @@ billboard_200 = 'http://www.billboard.com/charts/billboard-200'
 IMDBTV_WATCHLIST = settings.imdbtv_watchlist_url()
 IMDB_LIST = settings.imdb_list_url()
 
-#_OA = Addon('plugin.video.otheraddons', sys.argv)
-#IMDBTV_WATCHLIST = settings.imdbtv_watchlist_url()
-#IMDB_LIST = settings.imdb_list_url()
-
 #Metahandler
 def GRABMETA(name,types,year=None):
         type = types
@@ -111,7 +107,7 @@ def IMDbcat():
         addDir('In Theaters',IMDbIT_url,15,art_('In Theaters','Sub Menus'),None,'')
         addDir('Top 250',IMDb250_url,17,art_('Top 250','Sub Menus'),None,'')
         addDir('Genre','http://www.imdb.com/genre',33,art_('Genre','Sub Menus'),None,'')
-        addDir('IMDb watchlist',movie_url,13,art_('IMDb watchlist','Sub Menus'),None,'')
+        addDir('IMDb watchlist',IMDb_url,13,art_('IMDb watchlist','Sub Menus'),None,'')
         addDir('Search',IMDb_url,32,art_('Search','Sub Menus'),None,'')
         set_view('list')
 
@@ -319,7 +315,7 @@ def ALLTIMEIMDB(url):
                     fanart= '%s_V1.jpg'%(match.group(1))
             except:
                     pass
-                    addDir(name,url,30,iconimage,None,description)   
+                    addDir(name,url,12,iconimage,None,description)   
                     set_view('list') 
         try:
                 url='http://www.imdb.com'+str(nextp1)
@@ -329,7 +325,46 @@ def ALLTIMEIMDB(url):
         except:
                 pass
         addDir('[COLOR red][B]<< Return To Main Menu[/B][/COLOR]','url','','',None,'')    
-        set_view('list') 
+        set_view('list')
+
+def ALLTIMEIMDBTV(url):
+        req = urllib2.Request(url)
+        link=OPEN_URL(url)
+        match = re.compile('<img src="(.+?)" height="74" width="54" alt=".+?" title="(.+?)\(([\d]{4}\s\TV\s\Series\))"></a>\n  </td>\n  <td class="title">\n    \n\n<span class="wlb_wrapper" data-tconst="(.+?)" data-size="small" data-caller-name="search"></span>\n\n    <a href=".+?">.+?</a>\n    <span class="year_type">.+?</span><br>\n<div class="user_rating">\n\n\n<div class="rating rating-list" data-auth=".+?" id=".+?" data-ga-identifier="advsearch"\n title=".+?click stars to rate">\n<span class="rating-bg">&nbsp;</span>\n<span class="rating-imdb" style="width.+?">&nbsp;</span>\n<span class="rating-stars">\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>1</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>2</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>3</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>4</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>5</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>6</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>7</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>8</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>9</span></a>\n<a href=".+?" title="Register or login to rate this title" rel="nofollow"><span>10</span></a>\n</span>\n<span class="rating-rating"><span class="value">.+?</span><span class="grey">/</span><span class="grey">10</span></span>\n<span class="rating-cancel"><a href=".+?" title="Delete" rel="nofollow"><span>X</span></a></span>\n&nbsp;</div>\n\n</div>\n<span class="outline">(.+?)</span>').findall(link)
+        nextp=re.compile('<a href="(.+?)">Next&nbsp;').findall(link)
+        try:
+                nextp1=nextp[0]
+        except:
+                pass       
+        for iconimage, name, year, url, description in match:
+            name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace(' TV Series','')
+            iconimage1 = iconimage
+            url = 'http://www.imdb.com/title/'+str(url)+'/'
+            regex=re.compile('(.+?)_V1.+?.jpg')
+            regex1=re.compile('(.+?).gif')
+            try:
+                    match = regex.search(iconimage1)
+                    iconimage= '%s_V1_.SX593_SY799_.jpg'%(match.group(1))
+                    fanart= '%s_V1.jpg'%(match.group(1))
+            except:
+                    pass
+            try:    
+                    match= regex1.search(iconimage1)
+                    iconimage= '%s.gif'%(match.group(1))
+                    fanart= '%s_V1.jpg'%(match.group(1))
+            except:
+                    pass
+                    addDir(name,url,30,iconimage,None,description)   
+                    set_view('list') 
+        try:
+                url='http://www.imdb.com'+str(nextp1)
+                name= '[COLOR blue][B]Next Page >>[/B][/COLOR]'
+                addDir(name,url,48,'',None,'')
+                set_view('list') 
+        except:
+                pass
+        addDir('[COLOR red][B]<< Return To Main Menu[/B][/COLOR]','url','','',None,'')    
+        set_view('list')
 
 def IMDBGENRE(url):
         link=OPEN_URL(url)
@@ -346,7 +381,7 @@ def IMDBGENRETV(url):
         for url1, name, in match:
                 url='http://www.imdb.com/search/title?genres=%s&title_type=tv_movie,tv_series,tv_special'% (url1)
                 iconimage=art+url1+'.png'
-                addDir(name,url,34,iconimage,None,'')
+                addDir(name,url,48,iconimage,None,'')
                 set_view('list')
 
 def onechannelinfo(url):
@@ -517,7 +552,7 @@ def add_executeaddonsmusic(name):
 ##############################################################################################################################################################################
 
 def IMDB_LISTS(url): 
-        addDir('Watch List',IMDBTV_WATCHLIST,14,art+'imdb.png',None,'')
+        addDir('Watch List',IMDBTV_WATCHLIST,14,art_('IMDb watchlist','Sub Menus'),None,'')
         if local.getSetting('imdb_user') == 'ur********':
                 xbmcgui.Dialog().ok('The Collective Information','You Need To Input Your IMDb Number Into ','Addon Settings')
         if local.getSetting('message') == 'false':
@@ -527,7 +562,7 @@ def IMDB_LISTS(url):
         match = re.compile('<div class="list_name"><b><a    onclick=".+?"     href="(.+?)"    >(.+?)\(([\d]{4}\))</a>').findall(link)
         for url, name, year in match:
             url='http://www.imdb.com'+str(url)+'?start=1&view=grid&sort=listorian:asc&defaults=1'   
-            addDir(name,url,14,art_('IMDb','Sub Menus'),None,'')    
+            addDir(name,url,12,art_('IMDb','Sub Menus'),None,'')    
             set_view('list')  
            
 def WATCH_TV_LIST(url):
@@ -535,21 +570,42 @@ def WATCH_TV_LIST(url):
         link=str(link).replace('\n','').replace('src="http://i.media-imdb.com/images/SFaa265aa19162c9e4f3781fbae59f856d/nopicture/medium/film.png" ','')
         link=link.split('<div class="list grid">')[1]
         link=link.split('<div class="see-more">')[0]
+        match=re.compile('''src="(.+?)".+?<a href="(.+?)">(.+?)</a>''').findall(link)
+        for iconimage, url, name in match:
+                if re.search('V1', iconimage, re.IGNORECASE):
+                        regex=re.compile('(.+?)_V1.+?.jpg')
+                        match = regex.search(iconimage)
+                        iconimage='%s_V1_.SX593_SY799_.jpg'%(match.group(1))
+                        fanart=str(iconimage).replace('_.SX593_SY799_','')
+                else:
+                        fanart='None'
+                url = 'http://www.imdb.com'+str(url)
+                name=str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace(':','')
+                series=str(name)
+                description=''
+                addDir(name,url,12,iconimage,None,'')
+                set_view('list')
+
+def WATCH_MOVIE_LIST(url):
+        link=OPEN_URL(url)
+        link=str(link).replace('\n','').replace('src="http://i.media-imdb.com/images/SFaa265aa19162c9e4f3781fbae59f856d/nopicture/medium/film.png" ','')
+        link=link.split('<div class="list grid">')[1]
+        link=link.split('<div class="see-more">')[0]
         match=re.compile('''src="(.+?)".+?<a href="(.+?)">(.+?)\(([\d]{4}\))</a>''').findall(link)
         for iconimage, url, name, year in match:
-            if re.search('V1', iconimage, re.IGNORECASE):
-                regex=re.compile('(.+?)_V1.+?.jpg')
-                match = regex.search(iconimage)
-                iconimage='%s_V1_.SX593_SY799_.jpg'%(match.group(1))
-                fanart=str(iconimage).replace('_.SX593_SY799_','')
-            else:
-                fanart='None'
-            url = 'http://www.imdb.com'+str(url)
-            name=str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace(':','')
-            series=str(name)
-            description=''
-            addDir(name,url,35,iconimage,None,'')   
-            set_view('list') 
+                if re.search('V1', iconimage, re.IGNORECASE):
+                        regex=re.compile('(.+?)_V1.+?.jpg')
+                        match = regex.search(iconimage)
+                        iconimage='%s_V1_.SX593_SY799_.jpg'%(match.group(1))
+                        fanart=str(iconimage).replace('_.SX593_SY799_','')
+                else:
+                        fanart='None'
+                url = 'http://www.imdb.com'+str(url)
+                name=str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace(':','')
+                series=str(name)
+                description=''
+                addDir(name,url,12,iconimage,None,'')
+                set_view('list') 
                         
 def WATCH_LIST_SEARCH(name,url,iconimage):
         series = str(name)
@@ -958,6 +1014,14 @@ elif mode==45:
 elif mode==46:
         print ''+url
         IMDbtvcat()
+
+elif mode==47:
+        print ''+url
+        WATCH_MOVIE_LIST(url)
+
+elif mode==48:
+        print ''+url
+        ALLTIMEIMDBTV(url)
                 
 elif mode==309:
         print ''+url

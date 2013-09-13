@@ -45,9 +45,9 @@ def art_(f,fo='',fe='.png'):
 ##### /\ ##### Common Functions #####
 
 def imdbtv_watchlist_url():
-    return "http://www.imdb.com/user/" + local.getSetting('imdb_user') + "/watchlist?start=1&view=grid&sort=listorian:asc&defaults=1"
+        return "http://www.imdb.com/user/" + local.getSetting('imdb_user') + "/watchlist?start=1&view=grid&sort=listorian:asc&defaults=1"
     
 def imdb_list_url():
-    return 'http://www.imdb.com/user/' + local.getSetting('imdb_user') + '/lists?tab=public'
+        return 'http://www.imdb.com/user/' + local.getSetting('imdb_user') + '/lists?tab=public'
 
 
