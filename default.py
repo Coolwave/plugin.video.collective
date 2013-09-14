@@ -73,6 +73,22 @@ def GRABMETA(name,types,year=None):
 
 ######################################################################################################################################################
 
+def _FixText(t):
+	if ("&amp;"  in t): t=t.replace('&amp;'  ,'&')#&amp;#x27;
+	if ("&nbsp;" in t): t=t.replace('&nbsp;' ," ")
+	if ('&#' in t) and (';' in t):
+		t=t.replace("&#8211;",";").replace("&#8216;","'").replace("&#8217;","'").replace('&#8220;','"').replace('&#8221;','"').replace('&#215;' ,'x').replace('&#x27;' ,"'").replace('&#xF4;' ,"o").replace('&#xb7;' ,"-").replace('&#xFB;' ,"u").replace('&#xE0;' ,"a").replace('&#xE9;' ,"e").replace('&#xE2;' ,"a").replace('&#0421;',"")
+		if ('&#' in t) and (';' in t):
+			try:		matches=re.compile('&#(.+?);').findall(t)
+			except:	matches=''
+			if (matches is not ''):
+				for match in matches:
+					if (match is not '') and (match is not ' ') and ("&#"+match+";" in t): t=t.replace("&#"+match+";" ,"")
+	for i in xrange(127,256): t=t.replace(chr(i),"")
+	try: t=t.encode('ascii', 'ignore'); t=t.decode('iso-8859-1')
+	except: t=t
+	return t
+
  #      addDir(name,url,mode,iconimage,types,favtype) mode is where it tells the plugin where to go scroll to bottom to see where mode is
 def CATEGORIES():
         addDir('Movies',onechannel_base,3,art_('Movies','Main Menu'),None,'')
@@ -466,7 +482,7 @@ def OPEN_URL(url):
     response = urllib2.urlopen(req)
     link = response.read()
     response.close()
-    return link
+    return _FixText(link)
 
 def add_executeaddons(name):
         search = name
