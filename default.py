@@ -29,11 +29,13 @@ tv_url = 'http://www.nzbtvseeker.com/'
 IMDb_url = 'http://www.imdb.com'
 IMDbIT_url = 'http://www.imdb.com/movies-in-theaters/?ref_=nb_mv_2_inth'
 IMDb250_url = 'http://www.imdb.com/search/title?groups=top_250&sort=user_rating&my_ratings=exclude'
+kidzone_url = 'http://www.imdb.com/search/title?genres=animation,family&title_type=feature,tv_movie'
+kidzonetv_url = 'http://www.imdb.com/search/title?genres=animation,family&title_type=tv_series,tv_special,mini_series'
 onechannel_base = 'http://www.primewire.ag'
 onechannel_featured = 'http://www.primewire.ag/index.php?sort=featured'
 onechannel_featuredtv = 'http://www.primewire.ag/?tv=&sort=featured'
 onechannel_lastest = 'http://www.primewire.ag/?sort=date'
-onechannel_lastesttv = 'http://www.primewire.ag/?tv=&sort=date'
+onechannel_lastesttv = 'http://www.primewire.ag/?tv'
 onechannel_populartv = 'http://www.primewire.ag/?tv=&sort=views'
 onechannel_popular = 'http://www.primewire.ag/?sort=views'
 onechannel_ratings = 'http://www.primewire.ag/?sort=ratings'
@@ -88,7 +90,7 @@ def TVSHOWScat():
         addDir('Ratings',onechannel_ratingstv,25,art_('Ratings','Sub Menus'),None,'')
         addDir('Release Date',onechannel_releasedatetv,27,art_('Release Date','Sub Menus'),None,'')
         addDir('Genre','http://www.imdb.com/genre',45,art_('Genre','Sub Menus'),None,'')
-        addDir('Kids Zone (TV)',IMDb_url,50,art_('IMDb','Sub Menus'),None,'')
+        addDir('Kids Zone (TV)',kidzonetv_url,50,art_('IMDb','Sub Menus'),None,'')
         addDir('IMDb',IMDb_url,46,art_('IMDb','Sub Menus'),None,'')
         addDir('Search',IMDb_url,44,art_('Search','Sub Menus'),None,'')
         set_view('list') 
@@ -100,7 +102,7 @@ def MOVIEScat():
         addDir('Ratings',onechannel_ratings,24,art_('Ratings','Sub Menus'),None,'')
         addDir('Release Date',onechannel_releasedate,26,art_('Release Date','Sub Menus'),None,'')
         addDir('Genre','http://www.imdb.com/genre',33,art_('Genre','Sub Menus'),None,'')
-        addDir('Kids Zone',IMDb_url,49,art_('IMDb','Sub Menus'),None,'')
+        addDir('Kids Zone',kidzone_url,49,art_('IMDb','Sub Menus'),None,'')
         addDir('IMDb',IMDb_url,16,art_('IMDb','Sub Menus'),None,'')
         addDir('Search',IMDb_url,32,art_('Search','Sub Menus'),None,'')
         set_view('list')
@@ -175,7 +177,7 @@ def IMDbrate(url):
 
 def KIDSzone(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        link = OPEN_URL(url+'/search/title?genres=animation,family&title_type=feature,tv_movie')
+        link = OPEN_URL(url)
         match =  re.compile('<a href="(.+?)" title="(.+?)\(([\d]{4}\))"><img src="(.+?)" height="74" width="54" alt=".+?" title=".+?"></a>').findall(link)
         for url, name, year, thumbnail in match:
                 name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace('&#x22;','"')
@@ -184,10 +186,10 @@ def KIDSzone(url):
         nextpage = re.compile('<a href="(.+?)">Next.+?</a>').findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.imdb.com/'+nextpage[0],49,'',None,'')
-
+                
 def KIDSzonetv(url):
         EnableMeta = local.getSetting('Enable-Meta')
-        link = OPEN_URL(url+'/search/title?genres=animation,family&title_type=tv_series,tv_special,mini_series')
+        link = OPEN_URL(url)
         match =  re.compile('<a href="(.+?)" title="(.+?)\(([\d]{4}\s\TV\s\Series\))"><img src="(.+?)" height="74" width="54" alt=".+?" title=".+?"></a>').findall(link)
         for url, name, year, thumbnail in match:
                 name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace('&#x22;','"')
@@ -228,7 +230,7 @@ def onechannellastest(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, year, thumbnail in match:
                 if EnableMeta == 'true':  addDir(name.encode('UTF-8','ignore'),url,12,'','Movie','Movies')
-                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore')+year,url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],18,'',None,'')
@@ -238,6 +240,7 @@ def onechannellastesttv(url):
         link=OPEN_URL(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(link)
         for url, name, year, thumbnail in match:
+                name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace('&#x22;','"')
                 if EnableMeta == 'true': addDir(name.encode('UTF-8','ignore'),url,30,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name.encode('UTF-8','ignore'),url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(link)
@@ -499,6 +502,9 @@ def add_executeaddons(name):
         if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.filmikz'):
                 addons_name.append('filmikz')
                 addons_context.append('plugin://plugin.video.filmikz/?mode=7&url=url&name='+search)
+        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.iwatchonline'):
+                addons_name.append('iwatchonline')
+                addons_context.append('plugin://plugin.video.iwatchonline/?mode=search&url=&query'+search)
 
         
         dialog = xbmcgui.Dialog()
@@ -791,6 +797,28 @@ def SEARCH():
         return search_entered 
 
 #######################################################################################################################################################################
+
+def smart_unicode(s):
+        """credit : sfaxman"""
+        if not s:
+                return ''
+        try:
+                if not isinstance(s, basestring):
+                        if hasattr(s, '__unicode__'):
+                                s = unicode(s)
+                        else:
+                                s = unicode(str(s), 'UTF-8')
+                elif not isinstance(s, unicode):
+                        s = unicode(s, 'UTF-8')
+        except:
+                if not isinstance(s, basestring):
+                        if hasattr(s, '__unicode__'):
+                                s = unicode(s)
+                        else:
+                                s = unicode(str(s), 'ISO-8859-1')
+                elif not isinstance(s, unicode):
+                        s = unicode(s, 'ISO-8859-1')
+        return s
 
 def get_params():
         param=[]
