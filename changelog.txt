@@ -1,2 +1,14 @@
-v1.0
-Initial Release
+v1.8.4
+muchmovies working
+V1.8.3
+pftv working keyboard only
+v1.8.1
+change icons pictures
+v1.8.0
+few fixes
+V1.7.7
+tv search fix
+V1.7.6
+added newznab keyboard only
+v1.6
+superrepo remove Release
