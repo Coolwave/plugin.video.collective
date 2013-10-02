@@ -6,7 +6,8 @@ from metahandler import metacontainers
 from universal import favorites
 from universal import _common as univ_common
 from settings import *
-#import checksuper
+import time,datetime
+
 
 ############################################################################################################################################################
 
@@ -23,17 +24,17 @@ art = collectivepath+'/art'
 net = Net()
 #SUBSCRIPTION_FILE = settings.subscription_file()
 #SUBSCRIPTIONS_ACTIVATED = settings.subscription_update()
-
+strdomain ="http://www.vidics.ch"
 ############################################################################################################################################################
 
 base_url = 'http://www.nzbmovieseeker.com'
 movie_url = 'http://www.nzbmovieseeker.com/New/'
 tv_url = 'http://www.nzbtvseeker.com/'
-IMDb_url = 'http://www.imdb.com'
-IMDbIT_url = 'http://www.imdb.com/movies-in-theaters/?ref_=nb_mv_2_inth'
-IMDb250_url = 'http://www.imdb.com/search/title?groups=top_250&sort=user_rating&my_ratings=exclude'
-kidzone_url = 'http://www.imdb.com/search/title?genres=animation,family&title_type=feature,tv_movie'
-kidzonetv_url = 'http://www.imdb.com/search/title?genres=animation,family&title_type=tv_series,tv_special,mini_series'
+IMDb_url = 'http://akas.imdb.com'
+IMDbIT_url = 'http://akas.imdb.com/movies-in-theaters/?ref_=nb_mv_2_inth'
+IMDb250_url = 'http://akas.imdb.com/search/title?groups=top_250&sort=user_rating&my_ratings=exclude'
+kidzone_url = 'http://akas.imdb.com/search/title?genres=animation,family&title_type=feature,tv_movie'
+kidzonetv_url = 'http://akas.imdb.com/search/title?genres=animation,family&title_type=tv_series,tv_special,mini_series'
 onechannel_base = 'http://www.primewire.ag'
 onechannel_featured = 'http://www.primewire.ag/index.php?sort=featured'
 onechannel_featuredtv = 'http://www.primewire.ag/?tv=&sort=featured'
@@ -85,40 +86,24 @@ def get_html(page_url):
         return html.encode('utf-8')
 
 def _FixText(t):
-	if ("&amp;"  in t): t=t.replace('&amp;'  ,'&')#&amp;#x27;
-	if ("&nbsp;" in t): t=t.replace('&nbsp;' ," ")
-	if ('&#' in t) and (';' in t):
-		t=t.replace("&#8211;",";").replace("&#8216;","'").replace("&#8217;","'").replace('&#8220;','"').replace('&#8221;','"').replace('&#215;' ,'x').replace('&#x27;' ,"'").replace('&#xF4;' ,"o").replace('&#xb7;' ,"-").replace('&#xFB;' ,"u").replace('&#xE0;' ,"a").replace('&#xE9;' ,"e").replace('&#xE2;' ,"a").replace('&#0421;',"")
-		if ('&#' in t) and (';' in t):
-			try:		matches=re.compile('&#(.+?);').findall(t)
-			except:	matches=''
-			if (matches is not ''):
-				for match in matches:
-					if (match is not '') and (match is not ' ') and ("&#"+match+";" in t): t=t.replace("&#"+match+";" ,"")
-	for i in xrange(127,256): t=t.replace(chr(i),"")
-	try: t=t.encode('ascii', 'ignore'); t=t.decode('iso-8859-1')
-	except: t=t
-	return t
+        if ("&amp;"  in t): t=t.replace('&amp;'  ,'&')#&amp;#x27;
+        if ("&nbsp;" in t): t=t.replace('&nbsp;' ," ")
+        if ('&#' in t) and (';' in t):
+                t=t.replace("&#8211;",";").replace("&#8216;","'").replace("&#8217;","'").replace('&#8220;','"').replace('&#8221;','"').replace('&#215;' ,'x').replace('&#x27;' ,"'").replace('&#xF4;' ,"o").replace('&#xb7;' ,"-").replace('&#xFB;' ,"u").replace('&#xE0;' ,"a").replace('&#xE9;' ,"e").replace('&#xE2;' ,"a").replace('&#0421;',"")
+                if ('&#' in t) and (';' in t):
+                        try:            matches=re.compile('&#(.+?);').findall(t)
+                        except: matches=''
+                        if (matches is not ''):
+                                for match in matches:
+                                        if (match is not '') and (match is not ' ') and ("&#"+match+";" in t): t=t.replace("&#"+match+";" ,"")
+        for i in xrange(127,256): t=t.replace(chr(i),"")
+        try: t=t.encode('ascii', 'ignore'); t=t.decode('iso-8859-1')
+        except: t=t
+        return t
 
 
 
 ######################################################################################################################################################
-
-def _FixText(t):
-	if ("&amp;"  in t): t=t.replace('&amp;'  ,'&')#&amp;#x27;
-	if ("&nbsp;" in t): t=t.replace('&nbsp;' ," ")
-	if ('&#' in t) and (';' in t):
-		t=t.replace("&#8211;",";").replace("&#8216;","'").replace("&#8217;","'").replace('&#8220;','"').replace('&#8221;','"').replace('&#215;' ,'x').replace('&#x27;' ,"'").replace('&#xF4;' ,"o").replace('&#xb7;' ,"-").replace('&#xFB;' ,"u").replace('&#xE0;' ,"a").replace('&#xE9;' ,"e").replace('&#xE2;' ,"a").replace('&#0421;',"")
-		if ('&#' in t) and (';' in t):
-			try:		matches=re.compile('&#(.+?);').findall(t)
-			except:	matches=''
-			if (matches is not ''):
-				for match in matches:
-					if (match is not '') and (match is not ' ') and ("&#"+match+";" in t): t=t.replace("&#"+match+";" ,"")
-	for i in xrange(127,256): t=t.replace(chr(i),"")
-	try: t=t.encode('ascii', 'ignore'); t=t.decode('iso-8859-1')
-	except: t=t
-	return t
 
  #      addDir(name,url,mode,iconimage,types,favtype) mode is where it tells the plugin where to go scroll to bottom to see where mode is
 def CATEGORIES():
@@ -132,6 +117,7 @@ def CATEGORIES():
        
 def TVSHOWScat():
         addDir('Latest Added',onechannel_lastesttv,21,art_('Latest','Sub Menus'),None,'')
+        addDir('TV Schedule [COLOR red][B]Not working just yet[/B][/COLOR]',strdomain,57,'',None,'')
         addDir('Featured',onechannel_featuredtv,19,art_('Featured','Sub Menus'),None,'')
         addDir('Popular',onechannel_populartv,23,art_('Popular','Sub Menus'),None,'')
         addDir('Ratings',onechannel_ratingstv,25,art_('Ratings','Sub Menus'),None,'')
@@ -157,7 +143,7 @@ def MOVIEScat():
 def IMDbcat():
         addDir('In Theaters',IMDbIT_url,15,art_('In Theaters','Sub Menus'),None,'')
         addDir('Top 250',IMDb250_url,17,art_('Top 250','Sub Menus'),None,'')
-        addDir('Genre','http://www.imdb.com/genre',33,art_('Genre','Sub Menus'),None,'')
+        addDir('Genre','http://akas.imdb.com/genre',33,art_('Genre','Sub Menus'),None,'')
         addDir('IMDb watchlist','url',13,art_('IMDb watchlist','Sub Menus'),None,'')
         addDir('Search',IMDb_url,32,art_('Search','Sub Menus'),None,'')
         set_view('list')
@@ -220,7 +206,7 @@ def IMDbrate(url):
                 if EnableMeta == 'false': addDir(name,url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<a href="(.+?)">Next.+?</a>').findall(html)
         if nextpage:
-                addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.imdb.com/'+nextpage[0],17,'',None,'')
+                addDir('[COLOR blue]Next Page >>[/COLOR]',' http://akas.imdb.com/'+nextpage[0],17,'',None,'')
 
 def KIDSzone(url):
         EnableMeta = local.getSetting('Enable-Meta')
@@ -232,19 +218,19 @@ def KIDSzone(url):
                 if EnableMeta == 'false': addDir(name,url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<a href="(.+?)">Next.+?</a>').findall(html)
         if nextpage:
-                addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.imdb.com/'+nextpage[0],49,'',None,'')
+                addDir('[COLOR blue]Next Page >>[/COLOR]',' http://akas.imdb.com/'+nextpage[0],49,'',None,'')
                 
 def KIDSzonetv(url):
         EnableMeta = local.getSetting('Enable-Meta')
         html = get_html(url)
         match =  re.compile('<a href="(.+?)" title="(.+?)\(([\d]{4}\s\TV\s\Series\))"><img src="(.+?)" height="74" width="54" alt=".+?" title=".+?"></a>').findall(html)
         for url, name, year, thumbnail in match:
-                name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace('&#x22;','"')
+                name = str(name).replace('USA','US').replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace('&#x22;','"')
                 if EnableMeta == 'true':  addDir(name,url,30,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name,url,30,thumbnail,None,'TV-Shows')
         nextpage = re.compile('<a href="(.+?)">Next.+?</a>').findall(html)
         if nextpage:
-                addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.imdb.com/'+nextpage[0],50,'',None,'')
+                addDir('[COLOR blue]Next Page >>[/COLOR]',' http://akas.imdb.com/'+nextpage[0],50,'',None,'')
 
 def onechannelmfeature(url):
         EnableMeta = local.getSetting('Enable-Meta')
@@ -263,6 +249,7 @@ def onechanneltvfeature(url):
         html = get_html(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
         for url, name, year, thumbnail in match:
+                name = str(name).replace('USA','US')
                 #name = str(name).replace('(2000)','').replace('(2001)','').replace('(2002)','').replace('(2003)','').replace('(2004)','').replace('(2005)','').replace('(2006)','').replace('(2007)','').replace('(2008)','').replace('(2009)','').replace('(2010)','').replace('(2011)','').replace('(2012)','').replace('(2013)','').replace('(2014)','').replace('(2015)','')       
                 if EnableMeta == 'true': addDir(name,url,30,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name,url,30,'',None,'TV-Shows')
@@ -287,7 +274,7 @@ def onechannellastesttv(url):
         html = get_html(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
         for url, name, year, thumbnail in match:
-                #name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace('&#x22;','"')
+                name = str(name).replace('USA','US')
                 if EnableMeta == 'true': addDir(name,url,30,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name,url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(html)
@@ -311,6 +298,7 @@ def onechanneltvpopular(url):
         html = get_html(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
         for url, name, year, thumbnail in match:
+                name = str(name).replace('USA','US')
                 if EnableMeta == 'true': addDir(name,url,30,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name,url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(html)
@@ -334,6 +322,7 @@ def onechanneltvratings(url):
         html = get_html(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
         for url, name, year, thumbnail in match:
+                name = str(name).replace('USA','US')
                 if EnableMeta == 'true': addDir(name,url,30,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name,url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(html)
@@ -357,6 +346,7 @@ def onechanneltvreleasedate(url):
         html = get_html(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
         for url, name, year, thumbnail in match:
+                name = str(name).replace('USA','US')
                 if EnableMeta == 'true': addDir(name,url,30,'','tvshow','TV-Shows')
                 if EnableMeta == 'false': addDir(name,url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(html)
@@ -376,7 +366,7 @@ def ALLTIMEIMDB(url):
         for iconimage, name,year,url, description in match:
             name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace(' TV Series','')
             iconimage1 = iconimage
-            url = 'http://www.imdb.com/title/'+str(url)+'/'
+            url = ' http://akas.imdb.com/title/'+str(url)+'/'
             regex=re.compile('(.+?)_V1.+?.jpg')
             regex1=re.compile('(.+?).gif')
             try:
@@ -394,7 +384,7 @@ def ALLTIMEIMDB(url):
                     addDir(name,url,12,iconimage,None,description)   
                     set_view('list') 
         try:
-                url='http://www.imdb.com'+str(nextp1)
+                url=' http://akas.imdb.com'+str(nextp1)
                 name= '[COLOR blue][B]Next Page >>[/B][/COLOR]'
                 addDir(name,url,34,'',None,'')
                 set_view('list') 
@@ -415,7 +405,7 @@ def ALLTIMEIMDBTV(url):
         for iconimage, name, year, url, description in match:
             name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace(' TV Series','')
             iconimage1 = iconimage
-            url = 'http://www.imdb.com/title/'+str(url)+'/'
+            url = ' http://akas.imdb.com/title/'+str(url)+'/'
             regex=re.compile('(.+?)_V1.+?.jpg')
             regex1=re.compile('(.+?).gif')
             try:
@@ -433,7 +423,7 @@ def ALLTIMEIMDBTV(url):
                     addDir(name,url,30,iconimage,None,description)   
                     set_view('list') 
         try:
-                url='http://www.imdb.com'+str(nextp1)
+                url='http://akas.imdb.com'+str(nextp1)
                 name= '[COLOR blue][B]Next Page >>[/B][/COLOR]'
                 addDir(name,url,48,'',None,'')
                 set_view('list') 
@@ -446,7 +436,7 @@ def IMDBGENRE(url):
         link=OPEN_URL(url)
         match = re.compile('<a href="/genre/(.+?)">(.+?)</a>').findall(link)
         for url1, name, in match:
-                url='http://www.imdb.com/search/title?genres=%s&title_type=feature&sort=moviemeter,asc'% (url1)
+                url=' http://akas.imdb.com/search/title?genres=%s&title_type=feature&sort=moviemeter,asc'% (url1)
                 iconimage=art+url1+'.png'
                 addDir(name,url,34,iconimage,None,'')
                 set_view('list')
@@ -455,7 +445,7 @@ def IMDBGENRETV(url):
         link=OPEN_URL(url)
         match = re.compile('<a href="/genre/(.+?)">(.+?)</a>').findall(link)
         for url1, name, in match:
-                url='http://www.imdb.com/search/title?genres=%s&title_type=tv_movie,tv_series,tv_special'% (url1)
+                url=' http://akas.imdb.com/search/title?genres=%s&title_type=tv_movie,tv_series,tv_special'% (url1)
                 iconimage=art+url1+'.png'
                 addDir(name,url,48,iconimage,None,'')
                 set_view('list')
@@ -495,13 +485,30 @@ def BILLBOARD_ALBUM_LISTS(name,url):
         set_view('list')
 
 def Music_genre(url):
-        
+        html = get_html(url)
         match=re.compile('<a href="/genre(.+?)">\n.+?span>(.+?)</span>').findall(html)
         for url, name in match:
                 url=allmusic_url+'/genre'+url
         addDir(name,url,40,'',None,'')
-        setView('movies', 'default')
-        
+        set_view('list')
+
+def SEASONS(url):
+        url1 = 'http://www.primewire.ag'+url
+        html = get_html(url1)
+        match=re.compile('<h2><a href="(.+?)">(.+?)</a></h2>').findall(html)
+        for url,name in match:
+                addDir(name,url,56,'',None,'TV-Shows')
+        set_view('seasons')
+
+def EPISODES(url):
+        EnableMeta = local.getSetting('Enable-Meta')
+        url1 = 'http://www.primewire.ag'+url
+        html = get_html(url1)
+        match = re.compile('<h1 class="titles"><span>\r\n.+?<a href=".+?">(.+?)</a>.+?</span></h1>.+?<div class="tv_episode_item"> <a href="(.+?)">(.+?)                                <span class="tv_episode_name">(.+?)</span>\r\n.+?</a> </div>',re.DOTALL).findall(html)
+        for name,url,name1,name2 in match:
+                if EnableMeta == 'true':  addDir(name+' - '+name1 + name2,url,30,'','tvshow','TV-Shows')
+                if EnableMeta == 'false': addDir(name+' - '+name1 + name2,url,30,thumbnail,None,'TV-Shows')
+        set_view('episodes')        
                 
 
 
@@ -513,7 +520,7 @@ def OPEN_URL(url):
     response = urllib2.urlopen(req)
     link = response.read()
     response.close()
-    return _FixText(link)
+    return link
 
 
 def add_testexecuteaddons(name):
@@ -541,7 +548,7 @@ def add_testexecuteaddons(name):
                 testexecuteaddons.append(('Search Mashup', 'XBMC.Container.Update(%s?mode=4&url=%s)' % (
                         'plugin://plugin.video.movie25/', search)))
 
-        print testexecuteaddons
+        return testexecuteaddons
 
 ###########################################################################################################################################################################
 
@@ -550,76 +557,189 @@ def add_executeaddons(name):
         search = name
         addons_name = []
         addons_context = []
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.icefilms'):
-                addons_name.append('IceFilms')
-                addons_context.append('plugin://plugin.video.icefilms/?mode=555&url=http://www.icefilms.info/&search='+search+'&nextPage=1')
-                #addons_context.append('plugin://plugin.video.icefilms/?mode=55&name='+search+'&url=http%3a%2f%2fwww.icefilms.info%2')
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.1channel'):
-                addons_name.append('1channel (Movies)')
-                addons_context.append('plugin://plugin.video.1channel/?mode=7000&section=&query='+urllib.quote_plus(search)+'=')
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.simplymovies'):
-                addons_name.append('Simplymovies')
-                addons_context.append('plugin://plugin.video.simplymovies/?mode=5&url=url&page=0&search=' + urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.movie25'):
-                addons_name.append('Mashup')
-                searchmp = search.replace(' ','%20')
-                addons_context.append('plugin://plugin.video.movie25/?mode=4&url='+urllib.quote_plus(searchmp))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.muchmovies'):
-                addons_name.append('Muchmovies')
-                addons_context.append('plugin://plugin.video.muchmovies/?mode=7&name='+urllib.quote_plus(search)+'&url=%2fsearch')
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.whatthefurk'):
-                addons_name.append('WhatTheFurk')
-                addons_context.append('plugin://plugin.video.whatthefurk/?mode=movie dialog menu&url=url&name='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.filmikz'):
-                addons_name.append('Filmikz')
-                addons_context.append('plugin://plugin.video.filmikz/?mode=7&url=url&name='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.mmline'):
-                addons_name.append('Megamovieline')
-                addons_context.append('plugin://plugin.video.mmline/?mode=30&url=url&name='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.dailyflix'):
-                addons_name.append('Dailyflix')
-                addons_context.append('plugin://plugin.video.dailyflix/?mode=32&url=url&name='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.alluc'):
-                addons_name.append('Alluc')
-                addons_context.append('plugin://plugin.video.alluc/?mode=22&url=url&name='+urllib.quote_plus(searchmp))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.moviefork'):
-                addons_name.append('Moviefork')
-                addons_context.append('plugin://plugin.video.moviefork/?mode=Search&url=url&section=movies&pageno=1&pagecount=1&title='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.merdb'):
-                addons_name.append('Merdb')
-                addons_context.append('plugin://plugin.video.merdb/?mode=Search&section=movies&url='+urllib.quote_plus('http://merdb.ru/')+'&title='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.solarmovie.so'):
-                addons_name.append('Solarmovie.so')
-                addons_context.append('plugin://plugin.video.solarmovie.so/?mode=Search&section=movies&title='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.navi-x'):
-                addons_name.append('Navi-x (plugin only) [COLOR blue][B]Keyboard entry only[/B][/COLOR]' )
-                addons_context.append('plugin://plugin.navi-x/?date&mode=0&name='+search+'%20navi-xtreme&processor&type=search&url=http%3a%2f%2fwww.navixtreme.com%2fplaylist%2fsearch%2f')
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.vidics'):
-                addons_name.append('vidics [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
-                searchvd = search.replace(' ','%20')
-                addons_context.append('plugin://plugin.video.vidics/?mode=9&name='+urllib.quote_plus(searchvd)+'%20Movies&url=search')
-                #addons_context.append('plugin://plugin.video.vidics/?mode=4&name='+urllib.quote_plus(searchvd)+'&url=http://www.vidics.ch/Film/'+urllib.quote_plus(searchvd)+'&vidtype=movie')
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.newznab'):
-                addons_name.append('Newznab [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
-                addons_context.append('plugin://plugin.video.newznab/?catid=2000&index=1&mode=newznab&newznab=search='+search)
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.NoobRoom'):
-                addons_name.append('NoobRoom [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
-                #searchnb = search.replace(' ','+')
-                addons_context.append('plugin://plugin.video.NoobRoom/?mode=5&name=Search&url='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.OCM'):
-                addons_name.append('OCM [COLOR red][B]Not working just yet[/B][/COLOR]')
-                addons_context.append('plugin://plugin.video.OCM/?mode=universalsearch&url='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.moviekingdom'):
-                addons_name.append('MovieKingdom [COLOR red][B]Not working just yet[/B][/COLOR]')
-                addons_context.append('plugin://plugin.video.moviekingdom/?mode=200&url='+search+'&imdb=SRO')
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.iwatchonline'):
-                addons_name.append('Iwatchonline [COLOR red][B]Not working just yet[/B][/COLOR]')
-                addons_context.append('plugin://plugin.video.iwatchonline/?mode=search&url=&query'+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.sceper'):
-                addons_name.append('Sceper [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
-                searchsp = search.replace(' ','+')
-                addons_context.append('plugin://plugin.video.sceper/?mode=GetSearchQuery&section=movies'+urllib.quote_plus(searchsp))
-        
+        EnableIcefilms = local.getSetting('Enable-Icefilms')
+        Enable1channel = local.getSetting('Enable-1channel')
+        Enablesimplymovies = local.getSetting('Enable-SimplyMovies')
+        EnableMashup = local.getSetting('Enable-Mashup')
+        EnableMuchmovies = local.getSetting('Enable-Muchmovies')
+        Enablemoviekingdom = local.getSetting('Enable-moviekingdom')
+        EnableWhatthefurk = local.getSetting('Enable-Whatthefurk')
+        EnableFilmikz = local.getSetting('Enable-Filmikz')
+        EnableMegamovieline = local.getSetting('Enable-Megamovieline')
+        EnableDailyflix = local.getSetting('Enable-Dailyflix')
+        EnableAlluc = local.getSetting('Enable-Alluc')        
+        EnableMoviefork = local.getSetting('Enable-Moviefork')
+        EnableMerdb = local.getSetting('Enable-Merdb')
+        EnableSolarmovie = local.getSetting('Enable-Solarmovie')
+        EnableSceper = local.getSetting('Enable-Sceper')        
+        EnablereleaseBB = local.getSetting('Enable-releaseBB')        
+        Enableoneclickwatch = local.getSetting('Enable-oneclickwatch')
+        Enablerlscenter = local.getSetting('Enable-rlscenter')
+        Enablescenelog = local.getSetting('Enable-scenelog')
+        Enableddlvalley = local.getSetting('Enable-ddlvalley')
+        Enableisceners = local.getSetting('Enable-isceners')
+        Enable1linkmovies = local.getSetting('Enable-1linkmovies')
+        Enablemyvideolinks = local.getSetting('Enable-myvideolinks')
+        Enablescenesource = local.getSetting('Enable-scenesource')
+        Enablesinglelinkmoviez = local.getSetting('Enable-singlelinkmoviez')
+        Enabletheextopia = local.getSetting('Enable-theextopia')
+        Enablewrzko = local.getSetting('Enable-wrzko')
+        EnableNavix = local.getSetting('Enable-Navix')        
+        Enablevidics = local.getSetting('Enable-vidics')
+        EnableNewznab = local.getSetting('Enable-Newznab')
+        EnableNoobRoom = local.getSetting('Enable-NoobRoom')
+        EnableOCM = local.getSetting('Enable-OCM')
+        EnableIwatchonline = local.getSetting('Enable-Iwatchonline')
+        EnableEasyNews = local.getSetting('Enable-EasyNews')
+        Enablexbmctorrent = local.getSetting('Enable-xbmctorrent')
+        if EnableIcefilms == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.icefilms'):
+                        addons_name.append('IceFilms')
+                        addons_context.append('plugin://plugin.video.icefilms/?mode=555&url=http://www.icefilms.info/&search='+urllib.quote_plus(search)+'&nextPage=1')
+                        #addons_context.append('plugin://plugin.video.icefilms/?mode=55&name=Search&url=http%3a%2f%2fwww.icefilms.info%2f='+urllib.quote_plus(search)+'&nextPage=1')
+        if Enable1channel == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.1channel'):
+                        addons_name.append('1channel (Movies)')
+                        addons_context.append('plugin://plugin.video.1channel/?mode=7000&section=&query='+urllib.quote_plus(search)+'=')
+        if Enablesimplymovies == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.simplymovies'):
+                        addons_name.append('Simplymovies')
+                        addons_context.append('plugin://plugin.video.simplymovies/?mode=5&url=url&page=0&search=' + urllib.quote_plus(search))
+        if EnableNoobRoom == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.NoobRoom'):
+                        addons_name.append('NoobRoom')
+                        #searchnb = search.replace(' ','+')
+                        addons_context.append('plugin://plugin.video.NoobRoom/?mode=17&name='+urllib.quote_plus(search)+'&url=%2fsearch')
+        if EnableMashup == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.movie25'):
+                        addons_name.append('Mashup')
+                        searchmp = search.replace(' ','%20')
+                        addons_context.append('plugin://plugin.video.movie25/?mode=4&url='+urllib.quote_plus(searchmp))
+        if EnableMuchmovies == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.muchmovies'):
+                        addons_name.append('Muchmovies')
+                        addons_context.append('plugin://plugin.video.muchmovies/?mode=7&name='+urllib.quote_plus(search)+'&url=%2fsearch')
+        if Enablemoviekingdom == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.moviekingdom'):
+                        addons_name.append('MovieKingdom')
+                        addons_context.append('plugin://plugin.video.moviekingdom/?mode=200&url='+search+'&imdb=SRO')
+        if EnableWhatthefurk == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.whatthefurk'):
+                        addons_name.append('WhatTheFurk')
+                        addons_context.append('plugin://plugin.video.whatthefurk/?mode=movie dialog menu&url=url&name='+urllib.quote_plus(search))
+        if EnableFilmikz == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.filmikz'):
+                        addons_name.append('Filmikz')
+                        addons_context.append('plugin://plugin.video.filmikz/?mode=7&url=url&name='+urllib.quote_plus(search))
+        if EnableMegamovieline == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.mmline'):
+                        addons_name.append('Megamovieline')
+                        addons_context.append('plugin://plugin.video.mmline/?mode=30&url=url&name='+urllib.quote_plus(search))
+        if EnableDailyflix == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.dailyflix'):
+                        addons_name.append('Dailyflix')
+                        addons_context.append('plugin://plugin.video.dailyflix/?mode=32&url=url&name='+urllib.quote_plus(search))
+        if EnableAlluc == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.alluc'):
+                        addons_name.append('Alluc')
+                        addons_context.append('plugin://plugin.video.alluc/?mode=22&url=url&name='+urllib.quote_plus(searchmp))
+        if EnableMoviefork == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.moviefork'):
+                        addons_name.append('Moviefork')
+                        addons_context.append('plugin://plugin.video.moviefork/?mode=Search&url=url&section=movies&pageno=1&pagecount=1&title='+urllib.quote_plus(search))
+        if EnableMerdb == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.merdb'):
+                        addons_name.append('Merdb')
+                        addons_context.append('plugin://plugin.video.merdb/?mode=Search&section=movies&url='+urllib.quote_plus('http://merdb.ru/')+'&title='+urllib.quote_plus(search))
+        if EnableSolarmovie == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.solarmovie.so'):
+                        addons_name.append('Solarmovie.so')
+                        addons_context.append('plugin://plugin.video.solarmovie.so/?mode=Search&section=movies&title='+urllib.quote_plus(search))
+        if EnableSceper == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.sceper'):
+                        addons_name.append('Sceper')
+                        addons_context.append('plugin://plugin.video.sceper/?mode=Search&section=movies&query='+str(search))
+        if EnablereleaseBB == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.releaseBB'):
+                        addons_name.append('releaseBB')
+                        addons_context.append('plugin://plugin.video.releaseBB/?mode=Search&query='+str(search))
+        if Enableoneclickwatch == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.oneclickwatch'):
+                        addons_name.append('oneclickwatch')
+                        addons_context.append('plugin://plugin.video.oneclickwatch/?mode=Search&query='+str(search))
+        if Enablerlscenter == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.rls-center'):
+                        addons_name.append('rls-center')
+                        addons_context.append('plugin://plugin.video.rls-center/?mode=Search&query='+str(search))
+        if Enablescenelog == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.scenelog'):
+                        addons_name.append('scenelog')
+                        addons_context.append('plugin://plugin.video.rls-center/?mode=Search&query='+str(search))
+        if Enableddlvalley == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.ddlvalley'):
+                        addons_name.append('ddlvalley')
+                        addons_context.append('plugin://plugin.video.ddlvalley/?mode=Search&query='+str(search))
+        if Enableisceners == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.isceners'):
+                        addons_name.append('isceners')
+                        addons_context.append('plugin://plugin.video.isceners/?mode=Search&query='+str(search))
+        if Enable1linkmovies == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.1-linkmovies'):
+                        addons_name.append('1-linkmovies')
+                        addons_context.append('plugin://plugin.video.1-linkmovies/?mode=Search&query='+str(search))
+        if Enablemyvideolinks == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.myvideolinks'):
+                        addons_name.append('myvideolinks')
+                        addons_context.append('plugin://plugin.video.myvideolinks/?mode=Search&query='+str(search))
+        if Enablescenesource == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.scene-source'):
+                        addons_name.append('scene-source')
+                        addons_context.append('plugin://plugin.video.scene-source/?mode=Search&query='+str(search))
+        if Enablesinglelinkmoviez == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.singlelinkmoviez'):
+                        addons_name.append('singlelinkmoviez')
+                        addons_context.append('plugin://plugin.video.singlelinkmoviez/?mode=Search&query='+str(search))
+        if Enabletheextopia == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.theextopia'):
+                        addons_name.append('theextopia')
+                        addons_context.append('plugin://plugin.video.theextopia/?mode=Search&query='+str(search))
+        if Enablewrzko == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.wrzko'):
+                        addons_name.append('wrzko')
+                        addons_context.append('plugin://plugin.video.wrzko/?mode=Search&query='+str(search))                
+        if EnableNavix == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.navi-x'):
+                        addons_name.append('Navi-x (plugin only) [COLOR blue][B]Keyboard entry only[/B][/COLOR]' )
+                        addons_context.append('plugin://plugin.navi-x/?date&mode=0&name='+search+'%20navi-xtreme&processor&type=search&url=http%3a%2f%2fwww.navixtreme.com%2fplaylist%2fsearch%2f')
+        if Enablevidics == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.vidics'):
+                        addons_name.append('vidics [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.vidics/?mode=28&name='+urllib.quote_plus(search)+'&url=%2fsearch')                        
+        if EnableNewznab == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.newznab'):
+                        addons_name.append('Newznab [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.newznab/?catid=2000&index=1&mode=newznab&newznab=search&'+search+'=')
+        if EnableOCM == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.OCM'):
+                        addons_name.append('OCM [COLOR red][B]Not working just yet[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.OCM/?mode=universalsearch&url='+urllib.quote_plus(search))
+        if EnableIwatchonline == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.iwatchonline'):
+                        addons_name.append('Iwatchonline [COLOR red][B]Not working just yet[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.iwatchonline/?mode=search&url=&query'+urllib.quote_plus(search))
+        if EnableEasyNews == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.EasyNews'):
+                        addons_name.append('EasyNews [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.EasyNews/?mode=6&name='+urllib.quote_plus(search)+'&url=%2fsearch')
+        if Enablexbmctorrent == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.xbmctorrent'):
+                        addons_name.append('xbmctorrent (The Pirate Bay)')
+                        addons_context.append('plugin://plugin.video.xbmctorrent/tpb/search?%s' % urllib.urlencode({'query': search}))
+        if Enablexbmctorrent == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.xbmctorrent'):
+                        addons_name.append('xbmctorrent (Kickass Torrents)')
+                        addons_context.append('plugin://plugin.video.xbmctorrent/kickass/search?%s' % urllib.urlencode({'query': search}))                
+                
         
 
         
@@ -635,56 +755,155 @@ def add_executeaddonstv(name):
         search = name
         addons_name = []
         addons_context = []
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.icefilms'):
-                addons_name.append('IceFilms')
-                addons_context.append('plugin://plugin.video.icefilms/?mode=555&url=http://www.icefilms.info/&search='+search+'&nextPage=1')
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.movie25'):
-                addons_name.append('Rlsmix (TV)')
-                searchrm = search.replace(' ','%20')
-                addons_context.append('plugin://plugin.video.movie25/?mode=137&url='+urllib.quote_plus(searchrm))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.1channel'):
-                addons_name.append('1channel (Tv)')
-                addons_context.append('plugin://plugin.video.1channel/?mode=7000&section=tv&query='+urllib.quote_plus(search)+'=')
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.simplymovies'):
-                addons_name.append('Simplymovies (TV)')
-                addons_context.append('plugin://plugin.video.simplymovies/?mode=4&url=url&page=0&search=' + urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.alluc'):
-                addons_name.append('Alluc')
-                searchmp = search.replace(' ','%20')
-                addons_context.append('plugin://plugin.video.alluc/?mode=22&url=url&name='+searchmp)
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.whatthefurk'):
-                addons_name.append('WhatTheFurk')
-                addons_context.append('plugin://plugin.video.whatthefurk/?mode=episode dialog menu&url=url&name='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.merdb'):
-                addons_name.append('Merdb')
-                addons_context.append('plugin://plugin.video.merdb/?mode=Search&section=tvshows&url='+urllib.quote_plus('http://merdb.ru/')+'&title='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.solarmovie.so'):
-                addons_name.append('Solarmovie.so')
-                addons_context.append('plugin://plugin.video.solarmovie.so/?mode=Search&section=tv&title='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.projectfreetv'):
-                addons_name.append('ProjectFreeTv [COLOR blue][B]Keyboard Only[/B][/COLOR]')
-                searchpft = search.replace(' ','+')
-                addons_context.append('plugin://plugin.video.projectfreetv/?mode=search&section=shows='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.newznab'):
-                addons_name.append('Newznab [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
-                addons_context.append('plugin://plugin.video.newznab/?catid=5000&index=1&mode=newznab&newznab=search='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.navi-x'):
-                addons_name.append('Navi-x (plugin only) [COLOR blue][B]Keyboard entry only[/B][/COLOR]' )
-                addons_context.append('plugin://plugin.navi-x/?date&mode=0&name='+urllib.quote_plus(search)+'%20navi-xtreme&processor&type=search&url=http%3a%2f%2fwww.navixtreme.com%2fplaylist%2fsearch%2f')
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.vidics'):
-                addons_name.append('vidics [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
-                searchvd = search.replace(' ','%20')
-                addons_context.append('plugin://plugin.video.vidics/?mode=10&name='+urllib.quote_plus(searchvd)+'%20TV%20Shows&url=search')
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.iwatchonline'):
-                addons_name.append('IwatchOnline (Tv) [COLOR red][B]Not working just yet[/B][/COLOR]')
-                addons_context.append('plugin://plugin.video.iwatchonline/?mode=Search&query=wentworth&searchin=t')#&searchin=t')
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.tubeplus'):
-                addons_name.append('TubePlus [COLOR red][B]Not working just yet[/B][/COLOR]')
-                addons_context.append('plugin://plugin.video.tubeplus/?mode=130&url=url&name='+urllib.quote_plus(search))
-        if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.tv-release'):
-                addons_name.append('TV-Release (TV) [COLOR red][B]Not working just yet[/B][/COLOR]')
-                addons_context.append('plugin://plugin.video.tv-release/?mode=21&name='+urllib.quote_plus(search)+'&types=None&url=url')
-                
+        EnableIcefilmstv = local.getSetting('Enable-Icefilmstv')
+        Enable1channeltv = local.getSetting('Enable-1channeltv')
+        EnableProjectfreetv = local.getSetting('Enable-Projectfreetv')
+        EnableRlsmix = local.getSetting('Enable-Rlsmix')
+        EnableTubeplus = local.getSetting('Enable-Tubeplus')
+        Enabletvrelease = local.getSetting('Enable-tvrelease')
+        Enablesimplymoviestv = local.getSetting('Enable-SimplyMoviestv')
+        Enablemoviekingdomtv = local.getSetting('Enable-moviekingdomtv')
+        EnableWhatthefurk = local.getSetting('Enable-Whatthefurktv')
+        EnableAlluctv = local.getSetting('Enable-Alluctv')        
+        EnableMerdbtv = local.getSetting('Enable-Merdbtv')
+        EnableSolarmovietv = local.getSetting('Enable-Solarmovietv')
+        EnableScepertv = local.getSetting('Enable-Scepertv')        
+        EnablereleaseBBtv = local.getSetting('Enable-releaseBBtv')        
+        Enableoneclickwatchtv = local.getSetting('Enable-oneclickwatchtv')
+        Enablerlscentertv = local.getSetting('Enable-rlscentertv')
+        Enablescenelogtv = local.getSetting('Enable-scenelogtv')
+        Enableddlvalleytv = local.getSetting('Enable-ddlvalleytv')
+        Enableiscenerstv = local.getSetting('Enable-iscenerstv')
+        Enablemyvideolinkstv = local.getSetting('Enable-myvideolinkstv')
+        Enablescenesourcetv = local.getSetting('Enable-scenesourcetv')
+        Enabletheextopiatv = local.getSetting('Enable-theextopiatv')
+        Enablewrzkotv = local.getSetting('Enable-wrzkotv')
+        EnableNavixtv = local.getSetting('Enable-Navixtv')        
+        Enablevidicstv = local.getSetting('Enable-vidicstv')
+        EnableNewznabtv = local.getSetting('Enable-Newznabtv')
+        EnableOCMtv = local.getSetting('Enable-OCMtv')
+        EnableIwatchonlinetv = local.getSetting('Enable-Iwatchonlinetv')
+        EnableEasyNewstv = local.getSetting('Enable-EasyNewstv')
+        Enablexbmctorrenttv = local.getSetting('Enable-xbmctorrenttv')
+        if EnableIcefilmstv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.icefilms'):
+                        addons_name.append('IceFilms')
+                        addons_context.append('plugin://plugin.video.icefilms/?mode=555&url=http://www.icefilms.info/&search='+search+'&nextPage=1')
+        if EnableRlsmix == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.movie25'):
+                        addons_name.append('Rlsmix (TV)')
+                        searchrm = search.replace(' ','%20')
+                        addons_context.append('plugin://plugin.video.movie25/?mode=137&url='+urllib.quote_plus(searchrm))
+        if Enable1channeltv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.1channel'):
+                        addons_name.append('1channel (Tv)')
+                        addons_context.append('plugin://plugin.video.1channel/?mode=7000&section=tv&query='+urllib.quote_plus(search)+'=')
+        if Enablesimplymoviestv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.simplymovies'):
+                        addons_name.append('Simplymovies (TV)')
+                        addons_context.append('plugin://plugin.video.simplymovies/?mode=4&url=url&page=0&search=' + urllib.quote_plus(search))
+        if EnableAlluctv == 'true':  
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.alluc'):
+                        addons_name.append('Alluc')
+                        searchmp = search.replace(' ','%20')
+                        addons_context.append('plugin://plugin.video.alluc/?mode=22&url=url&name='+searchmp)
+        if EnableWhatthefurk == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.whatthefurk'):
+                        addons_name.append('WhatTheFurk')
+                        addons_context.append('plugin://plugin.video.whatthefurk/?mode=episode dialog menu&url=url&name='+urllib.quote_plus(search))
+        if EnableMerdbtv == 'true': 
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.merdb'):
+                        addons_name.append('Merdb')
+                        addons_context.append('plugin://plugin.video.merdb/?mode=Search&section=tvshows&url='+urllib.quote_plus('http://merdb.ru/')+'&title='+urllib.quote_plus(search))
+        if EnableSolarmovietv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.solarmovie.so'):
+                        addons_name.append('Solarmovie.so')
+                        addons_context.append('plugin://plugin.video.solarmovie.so/?mode=Search&section=tv&title='+urllib.quote_plus(search))
+        if EnableScepertv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.sceper'):
+                        addons_name.append('Sceper')
+                        addons_context.append('plugin://plugin.video.sceper/?mode=Search&section=tv-shows&query='+str(search))
+        if EnablereleaseBBtv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.releaseBB'):
+                        addons_name.append('releaseBB')
+                        addons_context.append('plugin://plugin.video.releaseBB/?mode=Search&query='+str(search))
+        if Enableoneclickwatchtv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.oneclickwatch'):
+                        addons_name.append('oneclickwatch')
+                        addons_context.append('plugin://plugin.video.oneclickwatch/?mode=Search&query='+str(search))
+        if Enablerlscentertv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.rls-center'):
+                        addons_name.append('rls-center')
+                        addons_context.append('plugin://plugin.video.rls-center/?mode=Search&query='+str(search))
+        if Enablescenelogtv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.scenelog'):
+                        addons_name.append('scenelog')
+                        addons_context.append('plugin://plugin.video.rls-center/?mode=Search&query='+str(search))
+        if Enableddlvalleytv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.ddlvalley'):
+                        addons_name.append('ddlvalley')
+                        addons_context.append('plugin://plugin.video.ddlvalley/?mode=Search&query='+str(search))
+        if Enableiscenerstv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.isceners'):
+                        addons_name.append('isceners')
+                        addons_context.append('plugin://plugin.video.isceners/?mode=Search&query='+str(search))
+        if Enablemyvideolinkstv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.myvideolinks'):
+                        addons_name.append('myvideolinks')
+                        addons_context.append('plugin://plugin.video.myvideolinks/?mode=Search&query='+str(search))
+        if Enablescenesourcetv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.scene-source'):
+                        addons_name.append('scene-source')
+                        addons_context.append('plugin://plugin.video.scene-source/?mode=Search&query='+str(search))
+        if Enabletheextopiatv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.theextopia'):
+                       addons_name.append('theextopia')
+                       addons_context.append('plugin://plugin.video.theextopia/?mode=Search&query='+str(search))
+        if Enablewrzkotv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.wrzko'):
+                        addons_name.append('wrzko')
+                        addons_context.append('plugin://plugin.video.wrzko/?mode=Search&query='+str(search))
+        if EnableProjectfreetv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.projectfreetv'):
+                        addons_name.append('ProjectFreeTv [COLOR blue][B]Keyboard Only[/B][/COLOR]')
+                        searchpft = search.replace(' ','+')
+                        addons_context.append('plugin://plugin.video.projectfreetv/?mode=search&section=shows='+urllib.quote_plus(search))
+        if EnableNewznabtv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.newznab'):
+                        addons_name.append('Newznab [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.newznab/?catid=5000&index=1&mode=newznab&newznab=search='+urllib.quote_plus(search))
+        if EnableNavixtv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.navi-x'):
+                        addons_name.append('Navi-x (plugin only) [COLOR blue][B]Keyboard entry only[/B][/COLOR]' )
+                        addons_context.append('plugin://plugin.navi-x/?date&mode=0&name='+urllib.quote_plus(search)+'%20navi-xtreme&processor&type=search&url=http%3a%2f%2fwww.navixtreme.com%2fplaylist%2fsearch%2f')
+        if Enablevidicstv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.vidics'):
+                        addons_name.append('vidics [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.vidics/?mode=29&name='+urllib.quote_plus(search)+'&url=%2fsearch')
+        if EnableIwatchonlinetv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.iwatchonline'):
+                        addons_name.append('IwatchOnline (Tv) [COLOR red][B]Not working just yet[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.iwatchonline/?mode=Search&query=wentworth&searchin=t')#&searchin=t')
+        if EnableTubeplus == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.tubeplus'):
+                        addons_name.append('TubePlus [COLOR red][B]Not working just yet[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.tubeplus/?mode=130&url=url&name='+urllib.quote_plus(search))
+        if Enabletvrelease == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.tv-release'):
+                        addons_name.append('TV-Release (TV) [COLOR red][B]Not working just yet[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.tv-release/?mode=21&name='+urllib.quote_plus(search)+'&types=None&url=url')
+        if EnableEasyNewstv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.EasyNews'):
+                        addons_name.append('EasyNews (TV) [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.EasyNews/?mode=12&name='+urllib.quote_plus(search)+'&url=%2fsearch')
+        if Enablexbmctorrenttv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.xbmctorrent'):
+                        addons_name.append('xbmctorrent (The Pirate Bay)')
+                        addons_context.append('plugin://plugin.video.xbmctorrent/tpb/search?%s' % urllib.urlencode({'query': search}))
+        if Enablexbmctorrenttv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.xbmctorrent'):
+                        addons_name.append('xbmctorrent (Kickass Torrents)')
+                        addons_context.append('plugin://plugin.video.xbmctorrent/kickass/search?%s' % urllib.urlencode({'query': search}))        
         #if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.hdtv-release'):
                 #addons_name.append('HDTV-Release (TV)[COLOR red][B]Not working just yet[/B][/COLOR]')
                 #addons_context.append('plugin://plugin.video.hdtv-release/?mode=GetSearchQuery&url='+search)
@@ -726,11 +945,50 @@ def add_executeaddonsmusic(name):
 
 ##############################################################################################################################################################################
 
+def getSchedule(sched_date): 
+        url="http://www.vidics.ch/calendar/"+sched_date+ ".html"
+        print "selected_date|" + url
+        html = get_html(url)
+        newlink = ''.join(html.splitlines()).replace('\t','')
+        listcontent=re.compile('<div class="indexClanedarDay left" id="date_'+sched_date+'">(.+?)</div>').findall(newlink)
+        print 
+        if(len(listcontent)>0):
+                latestepi=re.compile('<h3 itemscope itemtype="http://schema.org/TVSeries" class="CalTvshow" title="(.+?)">(.+?)</h3>').findall(listcontent[0])
+                for vtmp,vcontent in latestepi:
+                        (sUrl,stmp,sName)=re.compile('<a itemprop="url" class="CalTVshowName pukeGreen" href="(.+?)" title="(.+?)">(.+?)</a>').findall(vcontent)[0]
+                        (eUrl,eName)=re.compile('<a itemprop="url" class="CalTVshowEpisode blue" href=["\']?([^>^"^\']+)["\']?[^>]*>(.+?)</a>').findall(vcontent)[0]
+                        addDirContext(RemoveHTML(sName),strdomain+sUrl,57,"","","tv")
+                        addDirsehedule("  --"+RemoveHTML(eName),strdomain+eUrl,57,"")  
+def List4Days():
+        sched_date=str(datetime.date.today())
+        date_name=time.strftime("%A", time.strptime(sched_date, "%Y-%m-%d"))
+        addDir("Today's ("+sched_date+") TV Schedule "+sched_date,'',58,'',None,'')
+        sched_date=str(datetime.date.today()-datetime.timedelta(days=1))
+        date_name=time.strftime("%A", time.strptime(sched_date, "%Y-%m-%d"))
+        addDir(date_name+"'s ("+sched_date+") TV Schedule "+sched_date,'',58,'',None,'')
+        sched_date=str(datetime.date.today()-datetime.timedelta(days=2))
+        date_name=time.strftime("%A", time.strptime(sched_date, "%Y-%m-%d"))
+        addDir(date_name+"'s ("+sched_date+") TV Schedule "+sched_date,'',58,'',None,'')
+        sched_date=str(datetime.date.today()-datetime.timedelta(days=3))
+        date_name=time.strftime("%A", time.strptime(sched_date, "%Y-%m-%d"))
+        addDir(date_name+"'s ("+sched_date+") TV Schedule "+sched_date,'',58,'',None,'')
+        sched_date=str(datetime.date.today()-datetime.timedelta(days=4))
+        date_name=time.strftime("%A", time.strptime(sched_date, "%Y-%m-%d"))
+        addDir(date_name+"'s ("+sched_date+") TV Schedule "+sched_date,'',58,'',None,'')
+        sched_date=str(datetime.date.today()-datetime.timedelta(days=5))
+        date_name=time.strftime("%A", time.strptime(sched_date, "%Y-%m-%d"))
+        addDir(date_name+"'s ("+sched_date+") TV Schedule "+sched_date,'',58,'',None,'')
+        sched_date=str(datetime.date.today()-datetime.timedelta(days=6))
+        date_name=time.strftime("%A", time.strptime(sched_date, "%Y-%m-%d"))
+        addDir(date_name+"'s ("+sched_date+") TV Schedule "+sched_date,'',58,'',None,'')
+
+##############################################################################################################################################################################
+
 def IMDB_LISTS(url):
         addDir('IMDb watchlist',IMDBTV_WATCHLIST,14,art_('Watchlist','Sub Menus'),None,'')
         addDir('In Theaters',IMDbIT_url,15,art_('In Theaters','Sub Menus'),None,'')
         addDir('Top 250',IMDb250_url,17,art_('Top 250','Sub Menus'),None,'')
-        addDir('Genre','http://www.imdb.com/genre',33,art_('Genre','Sub Menus'),None,'')
+        addDir('Genre','http://akas.imdb.com/genre',33,art_('Genre','Sub Menus'),None,'')
         addDir('Search',IMDb_url,32,art_('Search','Sub Menus'),None,'')
         if local.getSetting('imdb_user') == 'ur********':
                 xbmcgui.Dialog().ok('The Collective Information','You Need To Input Your IMDb Number Into ','Addon Settings')
@@ -743,6 +1001,17 @@ def IMDB_LISTS(url):
                 #url='http://www.imdb.com'+str(url)+'?start=1&view=grid&sort=listorian:asc&defaults=1'
                 #addDir(name,url,35,art_('IMDb','Sub Menus'),None,'')
                 #set_view('list')
+
+def IMDB_LISTSTV(url):
+        addDir('IMDb watchlist',IMDBTV_WATCHLIST,14,art_('Watchlist','Sub Menus'),None,'')
+        addDir('Genre','http://akas.imdb.com/genre',45,art_('Genre','Sub Menus'),None,'')
+        addDir('Search',IMDb_url,44,art_('Search','Sub Menus'),None,'')
+        set_view('list')
+        if local.getSetting('imdb_user') == 'ur********':
+                xbmcgui.Dialog().ok('The Collective Information','You Need To Input Your IMDb Number Into ','Addon Settings')
+        if local.getSetting('message') == 'false':
+                xbmcgui.Dialog().ok('The Collective Information','            For Full Support For This Plugin Please Visit','                    [COLOR yellow][B]WWW.XBMCHUB.COM[/B][/COLOR]','Please Turn Off Message in Addon Settings')
+        #url=IMDB_LIST
 
            
 def WATCH_TV_LIST(url):
@@ -759,7 +1028,7 @@ def WATCH_TV_LIST(url):
                         fanart=str(iconimage).replace('_.SX593_SY799_','')
                 else:
                         fanart='None'
-                url = 'http://www.imdb.com'+str(url)
+                url = 'http://akas.imdb.com'+str(url)
                 name=str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace(':','')
                 series=str(name)
                 description=''
@@ -784,7 +1053,7 @@ def WATCH_MOVIE_LIST(url):
                         fanart=str(iconimage).replace('_.SX593_SY799_','')
                 else:
                         fanart='None'
-                url = 'http://www.imdb.com'+str(url)
+                url = 'http://akas.imdb.com'+str(url)
                 name=str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace(':','')
                 series=str(name)
                 description=''
@@ -814,7 +1083,7 @@ def Supersearch(url):
                 return
         newStr = searchstring.replace(' ','%20')
         mashup = 'http://www.movie25.so'
-        IMDb_url = 'http://www.imdb.com'
+        IMDb_url = 'http://akas.imdb.com'
         tv_release = 'http://tv-release.net'
         ochannel = 'http://www.primewire.ag'
         mashuplinks = re.compile('<input type="hidden" name="key" value="(.+?)" />').findall(mashup)
@@ -902,7 +1171,7 @@ def UNIVERSALSEARCH(name):
         EnableMeta = local.getSetting('Enable-Meta')
         newStr = name.replace(' ','%20')
         #http://www.imdb.com/find?q='+newStr+'&s=all'
-        html = get_html('http://www.imdb.com/search/title?title='+newStr+'&title_type=feature,tv_movie,documentary,video')
+        html = get_html(' http://akas.imdb.com/search/title?title='+newStr+'&title_type=feature,tv_movie,documentary,video')
         
         match =  re.compile('<a href="(.+?)" title="(.+?)\(([\d]{4}\))"><img src="(.+?)" height="74" width="54" alt=".+?" title=".+?"></a>').findall(html)
         for url, name, year, thumbnail in match:
@@ -915,7 +1184,7 @@ def UNIVERSALSEARCHTV(name):
         EnableMeta = local.getSetting('Enable-Meta')
         newStr = name.replace(' ','%20')
         #http://www.imdb.com/find?q='+newStr+'&s=all'
-        html = get_html('http://www.imdb.com/search/title?title='+newStr+'&title_type=tv_movie,tv_series,tv_episode,tv_special,mini_series')
+        html = get_html(' http://akas.imdb.com/search/title?title='+newStr+'&title_type=tv_movie,tv_series,tv_episode,tv_special,mini_series')
         
         match =  re.compile('<a href="(.+?)" title="(.+?)\(([\d]{4}\s\TV\s\Series\))"><img src="(.+?)" height="74" width="54" alt=".+?" title=".+?"></a>').findall(html)
         for url, name, year, thumbnail in match:
@@ -973,6 +1242,8 @@ def do_artist_search(search_entered):
                 addDir(artist,url,40,iconimage,None,artist)
                 set_view('list')
 
+                
+
 def SEARCH():
         search_entered = ''
         keyboard = xbmc.Keyboard(search_entered, 'Search Music...XBMCHUB.COM')
@@ -1013,7 +1284,7 @@ def get_subscriptions():
         xbmc.executebuiltin('UpdateLibrary(video)')
                     
     except:
-        xbmc.log("[The Collective...XBMCHUB.COM] Failed to fetch subscription")
+        xbmc.log("[Failed to fetch subscription")
 
 def subscription_index(name, mode):
     try:
@@ -1046,6 +1317,25 @@ def unsubscribe(name, mode):
             os.remove(SUBSCRIPTION_FILE)
         else:
             write_to_file(SUBSCRIPTION_FILE, s)
+
+def create_strm_file(name, data, imdb_id, mode, dir_path):
+    try:
+        strm_string = create_url(name, mode, data=data, imdb_id=imdb_id)
+        filename = clean_file_name("%s.strm" % name)
+        path = os.path.join(dir_path, filename)
+        stream_file = open(path, 'w')
+        stream_file.write(strm_string)
+        stream_file.close()
+    except:
+        xbmc.log("Error while creating strm file for : " + name)
+
+def remove_strm_file(name, dir_path):
+    try:
+        filename = "%s.strm" % (clean_file_name(name, use_blanks=False))
+        path = os.path.join(dir_path, filename)
+        os.remove(path)
+    except:
+        xbmc.log("[Was unable to remove movie: %s" % (name)) 
 
 #######################################################################################################################################################################
 
@@ -1091,6 +1381,32 @@ def addLink(name,url,iconimage):
         liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name } )
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz,isFolder=False)
+        return ok
+
+def RemoveHTML(strhtml):
+            html_re = re.compile(r'<[^>]+>')
+            strhtml=html_re.sub('', strhtml)
+            return strhtml
+
+def addDirContext(name,url,mode,iconimage,plot="",vidtype="", cm=[]):
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&vidtype="+vidtype
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+        liz.setInfo( type="Video", infoLabels={ "Title": name,"Plot": plot} )
+        if(len(cm)==0):
+                contextMenuItems = AddFavContext(vidtype, url, name, iconimage)
+        else:
+                contextMenuItems=cm
+        liz.addContextMenuItems(contextMenuItems, replaceItems=False)
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+        return ok
+
+def addDirsehedule(name,url,mode,iconimage,plot=""):
+        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+        ok=True
+        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+        liz.setInfo( type="Video", infoLabels={ "Title": name,"Plot": plot} )
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
 
 
@@ -1358,6 +1674,21 @@ elif mode==54:
         print ''+url
         add_testexecuteaddons(name)
 
+elif mode==55:
+        print ''+url
+        SEASONS(url)
+
+elif mode==56:
+        print ''+url
+        EPISODES(url)
+
+elif mode==57:
+        print ''+url
+        List4Days()
+
+elif mode==58:
+        print ''+url
+        getSchedule(sched_date)
                 
 elif mode==309:
         print ''+url
