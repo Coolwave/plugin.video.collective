@@ -27,7 +27,6 @@
 	<setting id="Enable-SimplyMovies" type="bool" label="Enable-SimplyMovies" default="True"/>
 	<setting id="Enable-Mashup" type="bool" label="Enable-Mashup" default="true"/>
 	<setting id="Enable-Muchmovies" type="bool" label="Enable-Muchmovies" default="true"/>
-	<setting id="Enable-xbmctorrent" type="bool" label="Enable-xbmctorrent" default="true"/>
 	<setting id="Enable-moviekingdom" type="bool" label="Enable-moviekingdom" default="true"/>
 	<setting id="Enable-Whatthefurk" type="bool" label="Enable-Whatthefurk" default="true"/>
 	<setting id="Enable-Filmikz" type="bool" label="Enable-Filmikz" default="true"/>
@@ -57,6 +56,9 @@
 	<setting id="Enable-OCM" type="bool" label="Enable-OCM" default="true"/>
 	<setting id="Enable-Iwatchonline" type="bool" label="Enable-Iwatchonline" default="true"/>
 	<setting id="Enable-EasyNews" type="bool" label="Enable-EasyNews" default="true"/>
+	<setting id="Enable-xbmctorrentpbt" type="bool" label="Enable-xbmctorrent(The Pirate Bay)" default="true"/>
+	<setting id="Enable-xbmctorrentka" type="bool" label="Enable-xbmctorrent(kickass torrents)" default="true"/>
+	<setting id="Enable-xbmctorrentyify" type="bool" label="Enable-xbmctorrent(yify)" default="true"/>
 </category>
 <category label="Tv Addon settings">
 	<setting label="TV Addons" type="lsep" />
@@ -65,7 +67,6 @@
 	<setting id="Enable-Projectfreetv" type="bool" label="Enable-Projectfreetv" default="true"/>
 	<setting id="Enable-Rlsmix" type="bool" label="Enable-Rlsmix" default="true"/>
 	<setting id="Enable-Tubeplus" type="bool" label="Enable-Tubeplus" default="true"/>
-	<setting id="Enable-xbmctorrenttv" type="bool" label="Enable-xbmctorrent tv" default="true"/>
 	<setting id="Enable-tvrelease" type="bool" label="Enable-tvrelease" default="true"/>
 	<setting id="Enable-SimplyMoviestv" type="bool" label="Enable-SimplyMovies tv" default="true"/>
 	<setting id="Enable-moviekingdomtv" type="bool" label="Enable-moviekingdom tv" default="true"/>
@@ -90,5 +91,8 @@
 	<setting id="Enable-OCMtv" type="bool" label="Enable-OCM tv" default="true"/>
 	<setting id="Enable-Iwatchonlinetv" type="bool" label="Enable-Iwatchonline tv" default="true"/>
 	<setting id="Enable-EasyNewstv" type="bool" label="Enable-EasyNews tv" default="true"/>
+	<setting id="Enable-xbmctorrentpbttv" type="bool" label="Enable-xbmctorren(The Pirate Bay)" default="true"/>
+	<setting id="Enable-xbmctorrentkatv" type="bool" label="Enable-xbmctorrent(kickass torrents)" default="true"/>
+	<setting id="Enable-xbmctorrentyifytv" type="bool" label="Enable-xbmctorrent(yify)" default="true"/>
 </category>
 </settings>
