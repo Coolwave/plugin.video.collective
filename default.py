@@ -591,7 +591,9 @@ def add_executeaddons(name):
         EnableOCM = local.getSetting('Enable-OCM')
         EnableIwatchonline = local.getSetting('Enable-Iwatchonline')
         EnableEasyNews = local.getSetting('Enable-EasyNews')
-        Enablexbmctorrent = local.getSetting('Enable-xbmctorrent')
+        Enablexbmctorrenttpb = local.getSetting('Enable-xbmctorrentpbt')
+        Enablexbmctorrentka = local.getSetting('Enable-xbmctorrentka')
+        Enablexbmctorrentyify = local.getSetting('Enable-xbmctorrentyify')
         if EnableIcefilms == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.icefilms'):
                         addons_name.append('IceFilms')
@@ -641,8 +643,9 @@ def add_executeaddons(name):
                         addons_context.append('plugin://plugin.video.dailyflix/?mode=32&url=url&name='+urllib.quote_plus(search))
         if EnableAlluc == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.alluc'):
+                        searchalluc = search.replace(' ','%20')
                         addons_name.append('Alluc')
-                        addons_context.append('plugin://plugin.video.alluc/?mode=22&url=url&name='+urllib.quote_plus(searchmp))
+                        addons_context.append('plugin://plugin.video.alluc/?mode=22&url=url&name='+urllib.quote_plus(searchalluc))
         if EnableMoviefork == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.moviefork'):
                         addons_name.append('Moviefork')
@@ -714,7 +717,8 @@ def add_executeaddons(name):
         if Enablevidics == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.vidics'):
                         addons_name.append('vidics [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
-                        addons_context.append('plugin://plugin.video.vidics/?mode=28&name='+urllib.quote_plus(search)+'&url=%2fsearch')                        
+                        #addons_context.append('plugin://plugin.video.vidics/?mode=28&name='+urllib.quote_plus(search)+'&url=%2fsearch')
+                        addons_context.append('plugin://plugin.video.vidics/?mode=28&url=movies&searchtext='+urllib.quote_plus(search))
         if EnableNewznab == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.newznab'):
                         addons_name.append('Newznab [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
@@ -731,14 +735,18 @@ def add_executeaddons(name):
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.EasyNews'):
                         addons_name.append('EasyNews [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
                         addons_context.append('plugin://plugin.video.EasyNews/?mode=6&name='+urllib.quote_plus(search)+'&url=%2fsearch')
-        if Enablexbmctorrent == 'true':
+        if Enablexbmctorrenttpb == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.xbmctorrent'):
                         addons_name.append('xbmctorrent (The Pirate Bay)')
                         addons_context.append('plugin://plugin.video.xbmctorrent/tpb/search?%s' % urllib.urlencode({'query': search}))
-        if Enablexbmctorrent == 'true':
+        if Enablexbmctorrentka == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.xbmctorrent'):
-                        addons_name.append('xbmctorrent (Kickass Torrents)')
-                        addons_context.append('plugin://plugin.video.xbmctorrent/kickass/search?%s' % urllib.urlencode({'query': search}))                
+                        addons_name.append('xbmctorrent (Kickass Torrents) [COLOR red][B]Not working just yet[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.xbmctorrent/kickass/search?%s' % urllib.urlencode({'query': search}))
+        if Enablexbmctorrentyify == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.xbmctorrent'):
+                        addons_name.append('xbmctorrent (yify) [COLOR red][B]Not working just yet[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.xbmctorrent/yify/search?%s' % urllib.urlencode({'query': search}))
                 
         
 
@@ -784,7 +792,9 @@ def add_executeaddonstv(name):
         EnableOCMtv = local.getSetting('Enable-OCMtv')
         EnableIwatchonlinetv = local.getSetting('Enable-Iwatchonlinetv')
         EnableEasyNewstv = local.getSetting('Enable-EasyNewstv')
-        Enablexbmctorrenttv = local.getSetting('Enable-xbmctorrenttv')
+        Enablexbmctorrenttpbtv = local.getSetting('Enable-xbmctorrentpbttv')
+        Enablexbmctorrentkatv = local.getSetting('Enable-xbmctorrentkatv')
+        Enablexbmctorrentyifytv = local.getSetting('Enable-xbmctorrentyifytv')
         if EnableIcefilmstv == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.icefilms'):
                         addons_name.append('IceFilms')
@@ -886,8 +896,8 @@ def add_executeaddonstv(name):
                         addons_context.append('plugin://plugin.video.iwatchonline/?mode=Search&query=wentworth&searchin=t')#&searchin=t')
         if EnableTubeplus == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.tubeplus'):
-                        addons_name.append('TubePlus [COLOR red][B]Not working just yet[/B][/COLOR]')
-                        addons_context.append('plugin://plugin.video.tubeplus/?mode=130&url=url&name='+urllib.quote_plus(search))
+                        addons_name.append('TubePlus [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.tubeplus/?mode=130&name='+urllib.quote_plus(search)+'TV%20Shows&types=None&url=url')
         if Enabletvrelease == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.tv-release'):
                         addons_name.append('TV-Release (TV) [COLOR red][B]Not working just yet[/B][/COLOR]')
@@ -896,14 +906,18 @@ def add_executeaddonstv(name):
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.EasyNews'):
                         addons_name.append('EasyNews (TV) [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
                         addons_context.append('plugin://plugin.video.EasyNews/?mode=12&name='+urllib.quote_plus(search)+'&url=%2fsearch')
-        if Enablexbmctorrenttv == 'true':
+        if Enablexbmctorrenttpbtv == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.xbmctorrent'):
                         addons_name.append('xbmctorrent (The Pirate Bay)')
                         addons_context.append('plugin://plugin.video.xbmctorrent/tpb/search?%s' % urllib.urlencode({'query': search}))
-        if Enablexbmctorrenttv == 'true':
+        if Enablexbmctorrentkatv == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.xbmctorrent'):
-                        addons_name.append('xbmctorrent (Kickass Torrents)')
-                        addons_context.append('plugin://plugin.video.xbmctorrent/kickass/search?%s' % urllib.urlencode({'query': search}))        
+                        addons_name.append('xbmctorrent (Kickass Torrents) [COLOR red][B]Not working just yet[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.xbmctorrent/kickass/search?%s' % urllib.urlencode({'query': search}))
+        if Enablexbmctorrentyifytv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.xbmctorrent'):
+                        addons_name.append('xbmctorrent (yify) [COLOR red][B]Not working just yet[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.xbmctorrent/yify/search?%s' % urllib.urlencode({'query': search}))
         #if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.hdtv-release'):
                 #addons_name.append('HDTV-Release (TV)[COLOR red][B]Not working just yet[/B][/COLOR]')
                 #addons_context.append('plugin://plugin.video.hdtv-release/?mode=GetSearchQuery&url='+search)

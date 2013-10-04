@@ -1,3 +1,5 @@
+V1.9.3
+added xbmctorrent
 V1.8.8
 Added enable section on settings
 V1.8.7
