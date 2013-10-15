@@ -193,8 +193,8 @@ def IMDbInTheaters(url):
         html = get_html(url)
         match =  re.compile('<div class=".+?">\n<img class=".+?"\nheight="209"\nwidth="140"\nalt=".+?"\ntitle="(.+?)\(([\d]{4}\))"\nsrc="(.+?)"\nitemprop="image" />\n</div>').findall(html)
         for name, year, thumbnail in match:
-                if EnableMeta == 'true':  addDir(name,url,12,'','Movie','Movies')
-                if EnableMeta == 'false': addDir(name,url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'true':  addDir(name+' ('+year,url,12,'','Movie','Movies')
+                if EnableMeta == 'false': addDir(name+' ('+year,url,12,thumbnail,None,'Movies')
 
 def IMDbrate(url):
         EnableMeta = local.getSetting('Enable-Meta')
@@ -202,8 +202,8 @@ def IMDbrate(url):
         match = re.compile('<a href="(.+?)" title="(.+?)\(([\d]{4}\))"><img src=".+?" height="74" width="54" alt=".+?" title=".+?"></a>').findall(html)
         for url, name, year in match:
                 name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace('&#x22;','"')
-                if EnableMeta == 'true':  addDir(name,url,12,'','Movie','Movies')
-                if EnableMeta == 'false': addDir(name,url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'true':  addDir(name+' ('+year,url,12,'','Movie','Movies')
+                if EnableMeta == 'false': addDir(name+' ('+year,url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<a href="(.+?)">Next.+?</a>').findall(html)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]',' http://akas.imdb.com/'+nextpage[0],17,'',None,'')
@@ -214,8 +214,8 @@ def KIDSzone(url):
         match =  re.compile('<a href="(.+?)" title="(.+?)\(([\d]{4}\))"><img src="(.+?)" height="74" width="54" alt=".+?" title=".+?"></a>').findall(html)
         for url, name, year, thumbnail in match:
                 name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace('&#x22;','"')
-                if EnableMeta == 'true':  addDir(name,url,12,'','Movie','Movies')
-                if EnableMeta == 'false': addDir(name,url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'true':  addDir(name+' ('+year,url,12,'','Movie','Movies')
+                if EnableMeta == 'false': addDir(name+' ('+year,url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<a href="(.+?)">Next.+?</a>').findall(html)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]',' http://akas.imdb.com/'+nextpage[0],49,'',None,'')
@@ -235,11 +235,11 @@ def KIDSzonetv(url):
 def onechannelmfeature(url):
         EnableMeta = local.getSetting('Enable-Meta')
         html = get_html(url)
-        match =  re.compile('<a href="(.+?)" title="Watch (.+?)(\([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
+        match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
         for url, name, year, thumbnail in match:
                 #name = str(name).replace('(2000)','').replace('(2001)','').replace('(2002)','').replace('(2003)','').replace('(2004)','').replace('(2005)','').replace('(2006)','').replace('(2007)','').replace('(2008)','').replace('(2009)','').replace('(2010)','').replace('(2011)','').replace('(2012)','').replace('(2013)','').replace('(2014)','').replace('(2015)','')
-                if EnableMeta == 'true':  addDir(name,url,12,'','Movie','Movies')
-                if EnableMeta == 'false': addDir(name,url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'true':  addDir(name+' ('+year,url,12,'','Movie','Movies')
+                if EnableMeta == 'false': addDir(name+' ('+year,url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(html)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],18,'',None,'')
@@ -251,8 +251,8 @@ def onechanneltvfeature(url):
         for url, name, year, thumbnail in match:
                 name = str(name).replace('USA','US')
                 #name = str(name).replace('(2000)','').replace('(2001)','').replace('(2002)','').replace('(2003)','').replace('(2004)','').replace('(2005)','').replace('(2006)','').replace('(2007)','').replace('(2008)','').replace('(2009)','').replace('(2010)','').replace('(2011)','').replace('(2012)','').replace('(2013)','').replace('(2014)','').replace('(2015)','')       
-                if EnableMeta == 'true': addDir(name,url,30,'','tvshow','TV-Shows')
-                if EnableMeta == 'false': addDir(name,url,30,'',None,'TV-Shows')
+                if EnableMeta == 'true': addDir(name+' ('+year,url,30,'','tvshow','TV-Shows')
+                if EnableMeta == 'false': addDir(name+' ('+year,url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(html)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],19,'',None,'')
@@ -263,8 +263,8 @@ def onechannellastest(url):
         html = get_html(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
         for url, name, year, thumbnail in match:
-                if EnableMeta == 'true':  addDir(name,url,12,'','Movie','Movies')
-                if EnableMeta == 'false': addDir(name,url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'true':  addDir(name+' ('+year,url,12,'','Movie','Movies')
+                if EnableMeta == 'false': addDir(name+' ('+year,url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(html)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],20,'',None,'')
@@ -275,8 +275,8 @@ def onechannellastesttv(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
         for url, name, year, thumbnail in match:
                 name = str(name).replace('USA','US')
-                if EnableMeta == 'true': addDir(name,url,30,'','tvshow','TV-Shows')
-                if EnableMeta == 'false': addDir(name,url,30,'',None,'TV-Shows')
+                if EnableMeta == 'true': addDir(name+' ('+year,url,30,'','tvshow','TV-Shows')
+                if EnableMeta == 'false': addDir(name+' ('+year,url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(html)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],21,'',None,'')
@@ -287,8 +287,8 @@ def onechannelmpopular(url):
         html = get_html(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
         for url, name, year, thumbnail in match:
-                if EnableMeta == 'true':  addDir(name,url,12,'','Movie','Movies')
-                if EnableMeta == 'false': addDir(name,url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'true':  addDir(name+' ('+year,url,12,'','Movie','Movies')
+                if EnableMeta == 'false': addDir(name+' ('+year,url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(html)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],22,'',None,'')
@@ -299,8 +299,8 @@ def onechanneltvpopular(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
         for url, name, year, thumbnail in match:
                 name = str(name).replace('USA','US')
-                if EnableMeta == 'true': addDir(name,url,30,'','tvshow','TV-Shows')
-                if EnableMeta == 'false': addDir(name,url,30,'',None,'TV-Shows')
+                if EnableMeta == 'true': addDir(name+' ('+year,url,30,'','tvshow','TV-Shows')
+                if EnableMeta == 'false': addDir(name+' ('+year,url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(html)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],23,'',None,'')
@@ -311,8 +311,8 @@ def onechannelmratings(url):
         html = get_html(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
         for url, name, year, thumbnail in match:
-                if EnableMeta == 'true':  addDir(name,url,12,'','Movie','Movies')
-                if EnableMeta == 'false': addDir(name,url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'true':  addDir(name+' ('+year,url,12,'','Movie','Movies')
+                if EnableMeta == 'false': addDir(name+' ('+year,url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(html)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],24,'',None,'')
@@ -323,8 +323,8 @@ def onechanneltvratings(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
         for url, name, year, thumbnail in match:
                 name = str(name).replace('USA','US')
-                if EnableMeta == 'true': addDir(name,url,30,'','tvshow','TV-Shows')
-                if EnableMeta == 'false': addDir(name,url,30,'',None,'TV-Shows')
+                if EnableMeta == 'true': addDir(name+' ('+year,url,30,'','tvshow','TV-Shows')
+                if EnableMeta == 'false': addDir(name+' ('+year,url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(html)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],25,'',None,'')
@@ -335,8 +335,8 @@ def onechannelmreleasedate(url):
         html = get_html(url)
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
         for url, name, year, thumbnail in match:
-                if EnableMeta == 'true':  addDir(name,url,12,'','Movie','Movies')
-                if EnableMeta == 'false': addDir(name,url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'true':  addDir(name+' ('+year,url,12,'','Movie','Movies')
+                if EnableMeta == 'false': addDir(name+' ('+year,url,12,thumbnail,None,'Movies')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(html)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],26,'',None,'')
@@ -347,8 +347,8 @@ def onechanneltvreleasedate(url):
         match =  re.compile('<a href="(.+?)" title="Watch (.+?)\(([\d]{4}\))"><img src="(.+?)" border="0" width="150" height="225" alt=".+?"><h2>.+?</h2></a>').findall(html)
         for url, name, year, thumbnail in match:
                 name = str(name).replace('USA','US')
-                if EnableMeta == 'true': addDir(name,url,30,'','tvshow','TV-Shows')
-                if EnableMeta == 'false': addDir(name,url,30,'',None,'TV-Shows')
+                if EnableMeta == 'true': addDir(name+' ('+year,url,30,'','tvshow','TV-Shows')
+                if EnableMeta == 'false': addDir(name+' ('+year,url,30,'',None,'TV-Shows')
         nextpage = re.compile('<div class="pagination">.+?class=current>.+?href="(.+?)">.+?<a href=".+?">.+?</a>.+?<a href=".+?">.+?</div>',re.DOTALL).findall(html)
         if nextpage:
                 addDir('[COLOR blue]Next Page >>[/COLOR]','http://www.primewire.ag'+nextpage[0],27,'',None,'')
@@ -381,12 +381,12 @@ def ALLTIMEIMDB(url):
                     fanart= '%s_V1.jpg'%(match.group(1))
             except:
                     pass
-                    addDir(name,url,12,iconimage,None,description)   
+                    addDir(name+' ('+year,url,12,iconimage,None,description)   
                     set_view('list') 
         try:
                 url=' http://akas.imdb.com'+str(nextp1)
                 name= '[COLOR blue][B]Next Page >>[/B][/COLOR]'
-                addDir(name,url,34,'',None,'')
+                addDir(name+' ('+year,url,34,'',None,'')
                 set_view('list') 
         except:
                 pass
@@ -522,6 +522,9 @@ def OPEN_URL(url):
     response.close()
     return link
 
+def removeCollectiveText(text):
+        text= re.sub('\[COLOR.*?\[/COLOR\]','',text,re.I|re.DOTALL).strip()
+        return re.sub('[(\d{4})]','',text)#name=removeCollectiveText(name)
 
 def add_testexecuteaddons(name):
         search = name
@@ -554,14 +557,17 @@ def add_testexecuteaddons(name):
 
 def add_executeaddons(name):
         #name = name.replace('([\d]{4}\)','')
+        name=removeCollectiveText(name)
         search = name
         addons_name = []
         addons_context = []
         EnableIcefilms = local.getSetting('Enable-Icefilms')
         Enable1channel = local.getSetting('Enable-1channel')
         Enablesimplymovies = local.getSetting('Enable-SimplyMovies')
+        EnableSimplyPlayer = local.getSetting('Enable-SimplyPlayer')
         EnableMashup = local.getSetting('Enable-Mashup')
         EnableMuchmovies = local.getSetting('Enable-Muchmovies')
+        EnableMuchmoviesHD = local.getSetting('Enable-MuchmoviesHD')
         Enablemoviekingdom = local.getSetting('Enable-moviekingdom')
         EnableWhatthefurk = local.getSetting('Enable-Whatthefurk')
         EnableFilmikz = local.getSetting('Enable-Filmikz')
@@ -607,6 +613,10 @@ def add_executeaddons(name):
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.simplymovies'):
                         addons_name.append('Simplymovies')
                         addons_context.append('plugin://plugin.video.simplymovies/?mode=5&url=url&page=0&search=' + urllib.quote_plus(search))
+        if EnableSimplyPlayer == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.simply.player'):
+                        addons_name.append('Simply Player')
+                        addons_context.append('plugin://plugin.video.simply.player/?action=movies_search&query=' + urllib.quote_plus(search))
         if EnableNoobRoom == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.NoobRoom'):
                         addons_name.append('NoobRoom')
@@ -621,6 +631,10 @@ def add_executeaddons(name):
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.muchmovies'):
                         addons_name.append('Muchmovies')
                         addons_context.append('plugin://plugin.video.muchmovies/?mode=7&name='+urllib.quote_plus(search)+'&url=%2fsearch')
+        if EnableMuchmoviesHD == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.muchmovies.hd'):
+                        addons_name.append('muchmovies.hd [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.muchmovies.hd/?action=search&query='+urllib.quote_plus(search))
         if Enablemoviekingdom == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.moviekingdom'):
                         addons_name.append('MovieKingdom')
@@ -726,7 +740,8 @@ def add_executeaddons(name):
         if EnableOCM == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.OCM'):
                         addons_name.append('OCM [COLOR red][B]Not working just yet[/B][/COLOR]')
-                        addons_context.append('plugin://plugin.video.OCM/?mode=universalsearch&url='+urllib.quote_plus(search))
+                        searchocm = search.replace(' ','+')
+                        addons_context.append('plugin://plugin.video.OCM/?mode=131&name='+urllib.quote_plus(search)+'&types=None&url=url')
         if EnableIwatchonline == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.iwatchonline'):
                         addons_name.append('Iwatchonline [COLOR red][B]Not working just yet[/B][/COLOR]')
@@ -747,12 +762,16 @@ def add_executeaddons(name):
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.xbmctorrent'):
                         addons_name.append('xbmctorrent (yify) [COLOR red][B]Not working just yet[/B][/COLOR]')
                         addons_context.append('plugin://plugin.video.xbmctorrent/yify/search?%s' % urllib.urlencode({'query': search}))
-                
+        if Enable1channel == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.gozlan.me'):
+                        addons_name.append('gozlan.me [COLOR red][B]Not working just yet[/B][/COLOR]')
+                        addons_context.append('plugin://plugin.video.gozlan.me/?mode=1&url=http://anonymouse.org/cgi-bin/anon-www.cgi/http://gozlan.co/search.html?s='+str(search))
+                                
         
 
         
         dialog = xbmcgui.Dialog()
-        ret = dialog.select('Select one of the addons below', addons_name)
+        ret = dialog.select('Select one of the addons below', addons_name)#"'+search.title()+'"
         if ret == -1:
                 return 
         contextommand = addons_context[ret]
@@ -760,6 +779,7 @@ def add_executeaddons(name):
         
 
 def add_executeaddonstv(name):
+        name=removeCollectiveText(name)
         search = name
         addons_name = []
         addons_context = []
@@ -770,6 +790,7 @@ def add_executeaddonstv(name):
         EnableTubeplus = local.getSetting('Enable-Tubeplus')
         Enabletvrelease = local.getSetting('Enable-tvrelease')
         Enablesimplymoviestv = local.getSetting('Enable-SimplyMoviestv')
+        EnableSimplyPlayertv = local.getSetting('Enable-SimplyPlayertv')
         Enablemoviekingdomtv = local.getSetting('Enable-moviekingdomtv')
         EnableWhatthefurk = local.getSetting('Enable-Whatthefurktv')
         EnableAlluctv = local.getSetting('Enable-Alluctv')        
@@ -812,6 +833,10 @@ def add_executeaddonstv(name):
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.simplymovies'):
                         addons_name.append('Simplymovies (TV)')
                         addons_context.append('plugin://plugin.video.simplymovies/?mode=4&url=url&page=0&search=' + urllib.quote_plus(search))
+        if EnableSimplyPlayertv == 'true':
+                if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.simply.player'):
+                        addons_name.append('Simply Player (TV)')
+                        addons_context.append('plugin://plugin.video.simply.player/?action=shows_search&query=' + urllib.quote_plus(search))
         if EnableAlluctv == 'true':  
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.alluc'):
                         addons_name.append('Alluc')
@@ -897,7 +922,7 @@ def add_executeaddonstv(name):
         if EnableTubeplus == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.tubeplus'):
                         addons_name.append('TubePlus [COLOR blue][B]Keyboard entry only[/B][/COLOR]')
-                        addons_context.append('plugin://plugin.video.tubeplus/?mode=130&name='+urllib.quote_plus(search)+'TV%20Shows&types=None&url=url')
+                        addons_context.append('plugin://plugin.video.tubeplus/?mode=131&name='+urllib.quote_plus(search)+'TV%20Shows&types=None&url=url')
         if Enabletvrelease == 'true':
                 if os.path.exists(xbmc.translatePath("special://home/addons/") + 'plugin.video.tv-release'):
                         addons_name.append('TV-Release (TV) [COLOR red][B]Not working just yet[/B][/COLOR]')
@@ -1071,7 +1096,7 @@ def WATCH_MOVIE_LIST(url):
                 name=str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace(':','')
                 series=str(name)
                 description=''
-                addDir(name,url,12,iconimage,None,'')
+                addDir(name+' ('+year,url,12,iconimage,None,'')
                 set_view('list') 
                         
 def WATCH_LIST_SEARCH(name,url):
@@ -1156,8 +1181,8 @@ def IMDB_SEARCH(url):
         match =  re.compile('<a href="(.+?)" title="(.+?)\(([\d]{4}\))"><img src="(.+?)" height="74" width="54" alt=".+?" title=".+?"></a>').findall(html)
         for url, name, year, thumbnail in match:
                 name = str(name).replace('&#xB7;','').replace('&#x27;','').replace('&#x26;','And').replace('&#xE9;','e').replace('&amp;','And').replace('&#x22;','"')
-                if EnableMeta == 'true':  addDir(name,url,12,'','Movie','Movies')
-                if EnableMeta == 'false': addDir(name,url,12,thumbnail,None,'Movies')
+                if EnableMeta == 'true':  addDir(name+' ('+year,url,12,'','Movie','Movies')
+                if EnableMeta == 'false': addDir(name+' ('+year,url,12,thumbnail,None,'Movies')
         set_view('list')
 
 def IMDB_SEARCHTV(url):
