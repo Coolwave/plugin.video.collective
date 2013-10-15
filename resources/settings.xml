@@ -25,8 +25,10 @@
     <setting id="Enable-Icefilms" type="bool" label="Enable-Icefilms" default="true"/>
 	<setting id="Enable-1channel" type="bool" label="Enable-1channel" default="true"/>
 	<setting id="Enable-SimplyMovies" type="bool" label="Enable-SimplyMovies" default="True"/>
+	<setting id="Enable-SimplyPlayer" type="bool" label="Enable-SimplyPlayer" default="True"/>
 	<setting id="Enable-Mashup" type="bool" label="Enable-Mashup" default="true"/>
 	<setting id="Enable-Muchmovies" type="bool" label="Enable-Muchmovies" default="true"/>
+	<setting id="Enable-MuchmoviesHD" type="bool" label="Enable-Muchmovies-HD" default="true"/>
 	<setting id="Enable-moviekingdom" type="bool" label="Enable-moviekingdom" default="true"/>
 	<setting id="Enable-Whatthefurk" type="bool" label="Enable-Whatthefurk" default="true"/>
 	<setting id="Enable-Filmikz" type="bool" label="Enable-Filmikz" default="true"/>
@@ -69,6 +71,7 @@
 	<setting id="Enable-Tubeplus" type="bool" label="Enable-Tubeplus" default="true"/>
 	<setting id="Enable-tvrelease" type="bool" label="Enable-tvrelease" default="true"/>
 	<setting id="Enable-SimplyMoviestv" type="bool" label="Enable-SimplyMovies tv" default="true"/>
+	<setting id="Enable-SimplyPlayertv" type="bool" label="Enable-SimplyPlayertv" default="True"/>
 	<setting id="Enable-moviekingdomtv" type="bool" label="Enable-moviekingdom tv" default="true"/>
 	<setting id="Enable-Whatthefurktv" type="bool" label="Enable-Whatthefurk tv" default="true"/>
 	<setting id="Enable-Alluctv" type="bool" label="Enable-Alluc tv" default="true"/>
